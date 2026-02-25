@@ -13,35 +13,35 @@
             --danger: #ff4444; --text-main: #1A1A1A; --radius: 28px;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background: #fff; color: var(--text-main); font-family: 'Lato', sans-serif; margin: 0; padding-bottom: 40px; transition: background 0.3s; }
+        body { background: #fff; color: var(--text-main); font-family: 'Lato', sans-serif; margin: 0; padding-bottom: 40px; }
 
-        /* Splash */
         #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #12050D; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s; }
         .splash-logo { font-family: 'Playfair Display', serif; font-size: 32px; color: white; }
 
-        header { padding: 20px; background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        header { padding: 20px; background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
         header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary); }
 
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease forwards; }
+        .page { display: none; padding: 20px; animation: slideUp 0.3s ease-out forwards; }
         .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Loyalty Card */
         #loyalty-card { padding: 22px; border-radius: var(--radius); color: white; margin-bottom: 20px; transition: all 0.5s; position: relative; overflow: hidden; }
-        .status-gold { background: linear-gradient(135deg, #12050D 0%, #3a0a22 100%); box-shadow: 0 15px 30px rgba(216, 27, 96, 0.2); }
-        .status-lost { background: linear-gradient(135deg, #555 0%, #222 100%); filter: grayscale(1); opacity: 0.8; }
+        .status-gold { background: linear-gradient(135deg, #12050D 0%, #3a0a22 100%); }
+        .status-lost { background: #444; filter: grayscale(1); }
 
         .progress-bar { background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; margin-top: 15px; }
         .progress-fill { background: linear-gradient(90deg, var(--primary), #FF4081); height: 100%; width: 50%; border-radius: 10px; transition: width 1s; }
 
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .bento-item { background: #fff; border-radius: var(--radius); padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .bento-accent { background: var(--primary); color: white; }
+
         .stat-card { background: #fdf2f7; padding: 18px; border-radius: 22px; flex: 1; text-align: center; border: 1px solid var(--primary-light); }
         .stat-value { display: block; font-size: 24px; font-weight: 900; color: var(--primary); }
-        .stat-minus { color: var(--danger) !important; animation: shake 0.5s; }
 
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-
-        .btn-action { background: var(--text-main); color: white; border: none; width: 100%; padding: 18px; border-radius: 50px; font-weight: 700; margin-top: 15px; }
-        .daily-btn { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: 700; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .daily-btn { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: 700; margin-top: 20px; }
+        .course-card { background: white; border-radius: var(--radius); overflow: hidden; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -55,45 +55,49 @@
     <div id="page-home" class="page active">
         <div id="loyalty-card" class="status-gold">
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span id="status-label" style="font-weight:700; letter-spacing:1px;">GOLD RESIDENT</span>
+                <span id="status-label" style="font-weight:700;">GOLD RESIDENT</span>
                 <span id="xp-text" style="font-size:12px;">50 / 100 XP</span>
             </div>
             <div class="progress-bar"><div class="progress-fill" id="xp-fill"></div></div>
-            <div id="discipline-msg" style="font-size: 10px; margin-top: 10px; opacity: 0.8;">Тренировки идут по графику ✓</div>
         </div>
 
-        <div style="display:flex; gap:12px; margin-bottom:20px;">
-            <div class="stat-card"><span class="stat-value" id="stats-bonus">150</span><span style="font-size:10px;">Diva-коинов</span></div>
-            <div class="stat-card"><span class="stat-value" id="stats-streak">3 дня</span><span style="font-size:10px;">Стрик</span></div>
+        <div class="bento-grid">
+            <div class="bento-item bento-accent" onclick="navigateTo('online')">
+                <span style="font-size:30px;">📺</span>
+                <div style="font-weight:700; margin-top:10px;">Онлайн</div>
+            </div>
+            <div class="bento-item" onclick="navigateTo('offline')">
+                <span style="font-size:30px;">👠</span>
+                <div style="font-weight:700; margin-top:10px;">В зале</div>
+            </div>
         </div>
 
-        <button class="daily-btn" onclick="checkIn()">
-            <span>🔥</span> Отметиться на тренировке
-        </button>
-
-        <div style="margin-top:20px; color: var(--text-sec); font-size: 11px; text-align: center;">
-            * Пропуск отметки более 24 часов ведет к потере 50 коинов и XP.
-        </div>
+        <button class="daily-btn" onclick="checkIn()">🔥 Отметиться</button>
     </div>
+
+    <div id="page-catalog" class="page"><div id="catalog-container"></div></div>
 
     <div id="page-profile" class="page">
         <div style="text-align:center; margin-bottom:20px;">
             <div id="big-avatar" style="width:90px; height:90px; border-radius:50%; margin:0 auto 15px; background-size:cover; border:3px solid var(--accent);"></div>
             <h2 id="user-full-name">Diva</h2>
-            <p id="profile-status-desc" style="color: var(--accent); font-weight: 700;">PRO LEVEL</p>
         </div>
-        <button class="btn-action" style="background: var(--danger);" onclick="simulateMiss()">Имитировать пропуск (Тест)</button>
+        <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <div class="stat-card"><span class="stat-value" id="stats-bonus">150</span><span style="font-size:10px;">Коинов</span></div>
+            <div class="stat-card"><span class="stat-value" id="stats-streak">3</span><span style="font-size:10px;">Стрик</span></div>
+        </div>
+        <button class="daily-btn" style="background:var(--danger);" onclick="simulateMiss()">Тест: Пропуск занятия</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
-        const user = tg.initDataUnsafe.user || { first_name: "Diva" };
+        
+        // Гарантируем скрытие кнопки на старте
+        tg.BackButton.hide();
 
-        let xp = 50;
-        let bonus = 150;
-        let streak = 3;
-        let isLost = false;
+        const user = tg.initDataUnsafe.user || { first_name: "Diva" };
+        let xp = 50; let bonus = 150; let streak = 3; let isLost = false;
 
         function initApp() {
             const photo = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=D81B60&color=fff`;
@@ -104,74 +108,82 @@
             setTimeout(() => { 
                 document.getElementById('splash-screen').style.opacity='0'; 
                 setTimeout(()=>document.getElementById('splash-screen').style.display='none',600); 
-            }, 1500);
+            }, 1000);
             updateUI();
         }
 
-        function checkIn() {
-            if(isLost) {
-                isLost = false;
-                xp = 50; bonus = 100; streak = 1;
-                tg.showAlert("Статус восстановлен! Не пропускай больше.");
+        // --- ЕДИНАЯ НАВИГАЦИЯ ---
+        function navigateTo(pageId) {
+            tg.HapticFeedback.impactOccurred('light');
+            
+            // Скрываем все страницы
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+            if (pageId === 'home') {
+                document.getElementById('page-home').classList.add('active');
+                document.getElementById('header-title').innerText = 'Studio';
+                tg.BackButton.hide(); // На главной кнопка не нужна
             } else {
-                xp = Math.min(xp + 10, 100);
-                bonus += 20;
-                streak++;
-                confetti({ particleCount: 100, spread: 70 });
+                const isCatalog = (pageId === 'online' || pageId === 'offline');
+                const targetId = isCatalog ? 'page-catalog' : 'page-' + pageId;
+                
+                document.getElementById(targetId).classList.add('active');
+                document.getElementById('header-title').innerText = 
+                    pageId === 'profile' ? 'Профиль' : (pageId === 'online' ? 'Онлайн' : 'В зале');
+                
+                if(isCatalog) renderCatalog(pageId);
+                
+                tg.BackButton.show(); // Показываем кнопку назад
             }
-            tg.HapticFeedback.notificationOccurred('success');
+        }
+
+        // ОБРАБОТКА НАЖАТИЯ НА КНОПКУ НАЗАД В ТЕЛЕГРАМЕ
+        tg.BackButton.onClick(() => {
+            navigateTo('home');
+        });
+
+        function renderCatalog(type) {
+            const container = document.getElementById('catalog-container');
+            container.innerHTML = `
+                <div class="course-card">
+                    <img src="https://images.unsplash.com/photo-1547153760-18fc86324498?w=600" style="width:100%; height:180px; object-fit:cover;">
+                    <div style="padding:20px;">
+                        <h3>Курс: ${type === 'online' ? 'Интенсив' : 'Студия'}</h3>
+                        <p style="color:var(--primary); font-weight:700;">1500 ₽</p>
+                        <button class="daily-btn" onclick="tg.showAlert('Запись подтверждена!')">Записаться</button>
+                    </div>
+                </div>`;
+        }
+
+        function checkIn() {
+            xp = Math.min(xp + 10, 100); bonus += 20; streak++;
+            confetti({ particleCount: 100, spread: 70 });
             updateUI();
         }
 
         function simulateMiss() {
-            tg.HapticFeedback.notificationOccurred('error');
-            document.body.style.background = "#ffebee";
-            setTimeout(() => document.body.style.background = "#fff", 500);
-
-            xp = Math.max(xp - 40, 0);
-            bonus = Math.max(bonus - 50, 0);
-            streak = 0;
-            
-            if(xp <= 20) isLost = true;
-            
+            xp = Math.max(xp - 30, 0); bonus = Math.max(bonus - 50, 0); streak = 0;
+            if(xp < 30) isLost = true;
             updateUI();
-            tg.showAlert("ВНИМАНИЕ: Вы пропустили занятия! Баллы списаны, статус под угрозой.");
+            tg.showAlert("Баллы списаны за пропуск!");
             navigateTo('home');
         }
 
         function updateUI() {
-            const card = document.getElementById('loyalty-card');
-            const fill = document.getElementById('xp-fill');
-            const statusLabel = document.getElementById('status-label');
-            const msg = document.getElementById('discipline-msg');
-
-            fill.style.width = xp + "%";
+            document.getElementById('xp-fill').style.width = xp + "%";
             document.getElementById('xp-text').innerText = `${xp} / 100 XP`;
             document.getElementById('stats-bonus').innerText = bonus;
-            document.getElementById('stats-streak').innerText = streak + " дн.";
-
+            document.getElementById('stats-streak').innerText = streak;
+            const card = document.getElementById('loyalty-card');
             if(isLost) {
                 card.className = "status-lost";
-                statusLabel.innerText = "STATUS: SUSPENDED";
-                msg.innerText = "Срочно отметься, чтобы вернуть привилегии!";
-                document.getElementById('profile-status-desc').innerText = "RESTRICTED ACCESS";
-                document.getElementById('profile-status-desc').style.color = "red";
+                document.getElementById('status-label').innerText = "SUSPENDED";
             } else {
                 card.className = "status-gold";
-                statusLabel.innerText = xp > 80 ? "PLATINUM DIVA" : "GOLD RESIDENT";
-                msg.innerText = "Тренировки идут по графику ✓";
-                document.getElementById('profile-status-desc').innerText = "PRO LEVEL";
-                document.getElementById('profile-status-desc').style.color = "var(--accent)";
+                document.getElementById('status-label').innerText = "GOLD RESIDENT";
             }
         }
 
-        function navigateTo(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
-            document.getElementById('page-' + p).classList.add('active');
-            p === 'home' ? tg.BackButton.hide() : tg.BackButton.show();
-        }
-
-        tg.BackButton.onClick(() => navigateTo('home'));
         initApp();
     </script>
 </body>
