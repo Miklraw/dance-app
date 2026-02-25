@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>High Heels Elite | Luxe Hub</title>
+    <title>В ДВИЖЕНИИ | Luxe App</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -20,22 +20,22 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow-x: hidden; line-height: 1.6; }
 
-        /* --- BACKGROUND SYSTEM --- */
+        /* --- СИСТЕМА ФОНА --- */
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: var(--dark); }
         #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; display: block; }
         .luxe-fallback { display: none; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #080808 100%); }
         .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(8,8,8,0.2) 0%, rgba(8,8,8,0.9) 100%); backdrop-filter: blur(2px); }
 
-        /* --- UI COMPONENTS --- */
-        header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
-        .logo-luxe { font-family: 'Playfair Display', serif; font-size: 22px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); }
+        /* --- КОМПОНЕНТЫ ИНТЕРФЕЙСА --- */
+        header { padding: 35px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
+        .logo-luxe { font-family: 'Playfair Display', serif; font-size: 24px; letter-spacing: 7px; text-transform: uppercase; color: var(--gold); }
         
         .container { padding: 20px; padding-bottom: 120px; max-width: 600px; margin: 0 auto; }
         .страница { display: none; animation: fadeIn 0.6s ease; }
         .страница.активна { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- CARDS & BLOCKS --- */
+        /* --- КАРТОЧКИ И БЛОКИ --- */
         .luxe-card {
             background: rgba(20, 20, 20, 0.6); border: 1px solid var(--border); border-radius: 2px;
             padding: 40px 25px; position: relative; overflow: hidden; margin-bottom: 25px; text-align: center; backdrop-filter: blur(15px);
@@ -47,13 +47,13 @@
         }
         @keyframes shine { 100% { left: 200%; } }
 
-        .rank-title { font-family: 'Playfair Display', serif; font-size: 32px; font-style: italic; color: var(--gold); margin: 10px 0; }
+        .rank-title { font-family: 'Playfair Display', serif; font-size: 34px; font-style: italic; color: var(--gold); margin: 10px 0; }
         .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 25px 0; position: relative; }
         .progress-fill { height: 1px; background: var(--gold); position: absolute; top: 0; left: 0; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 10px var(--gold); }
 
         .блок { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 2px; margin-bottom: 15px; backdrop-filter: blur(10px); }
 
-        /* --- BUTTONS --- */
+        /* --- КНОПКИ --- */
         .luxe-btn {
             background: transparent; border: 1px solid var(--border); color: var(--gold);
             padding: 18px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
@@ -61,14 +61,14 @@
         }
         .luxe-btn:active { background: var(--gold); color: black; }
 
-        /* --- ADMIN & JOURNAL --- */
+        /* --- АДМИНКА --- */
         .admin-only { display: none; }
         body.is-admin .admin-only { display: block; }
         .student-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .present-btn { padding: 8px 15px; border-radius: 2px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 9px; font-weight: 800; }
         .present-btn.on { background: var(--gold); color: black; }
 
-        /* --- NAVIGATION --- */
+        /* --- НАВИГАЦИЯ --- */
         .tab-bar {
             position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(8,8,8,0.98);
             display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border);
@@ -79,8 +79,7 @@
         .tab-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; margin-top: 6px; opacity: 0; }
         .tab-item.active .tab-dot { opacity: 1; }
         
-        .scan-circle { width: 50px; height: 50px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translateY(-5px); transition: 0.3s; }
-        .scan-circle:active { border-color: var(--gold); scale: 0.9; }
+        .scan-circle { width: 50px; height: 50px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translateY(-5px); }
     </style>
 </head>
 <body id="main-body">
@@ -94,49 +93,49 @@
     </div>
 
     <header>
-        <div class="logo-luxe">High Heels Elite</div>
+        <div class="logo-luxe">В ДВИЖЕНИИ</div>
     </header>
 
     <div class="container">
         
         <div id="home" class="страница активна">
             <div class="luxe-card">
-                <p style="font-size: 9px; letter-spacing: 3px; opacity: 0.6;">ESTABLISHED MEMBER</p>
-                <div class="rank-title" id="status-name">Diva</div>
+                <p style="font-size: 9px; letter-spacing: 3px; opacity: 0.6;">УРОВЕНЬ МАСТЕРСТВА</p>
+                <div class="rank-title" id="status-name">Дива</div>
                 <div class="progress-line"><div id="xp-fill" class="progress-fill"></div></div>
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--gold);">
                     <span id="xp-current">0 XP</span>
-                    <span style="opacity: 0.5;">NEXT LEVEL</span>
+                    <span style="opacity: 0.5;">СЛЕДУЮЩИЙ РАНГ</span>
                 </div>
             </div>
 
             <div class="блок" style="text-align: center;">
-                <p id="streak-info" style="font-size: 10px; letter-spacing: 2px; color: var(--gold);">🔥 3 DAY STREAK</p>
+                <p id="streak-info" style="font-size: 10px; letter-spacing: 2px; color: var(--gold);">🔥 3 ДНЯ В ДВИЖЕНИИ</p>
             </div>
 
-            <button class="luxe-btn" onclick="openBox()">Claim Daily Reward</button>
-            <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">Online Academy</button>
+            <button class="luxe-btn" onclick="openBox()">Получить подарок дня</button>
+            <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">Курсы и Обучение</button>
 
             <div class="admin-only" style="margin-top: 30px;">
                 <p style="font-size: 9px; color: var(--gold); text-align: center; margin-bottom: 15px; letter-spacing: 2px;">MANAGEMENT</p>
-                <button class="luxe-btn" style="border-color: var(--accent); color: var(--accent);" onclick="coachReward(50)">Award +50 XP Group</button>
+                <button class="luxe-btn" style="border-color: var(--gold); color: var(--gold);" onclick="coachReward(50)">Начислить XP всей группе</button>
             </div>
         </div>
 
         <div id="journal" class="страница">
-            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Attendance</h2>
+            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Журнал</h2>
             <div id="students-list"></div>
         </div>
 
         <div id="rating" class="страница">
-            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Elite Ranking</h2>
+            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Рейтинг</h2>
             <div id="leaderboard"></div>
         </div>
 
         <div id="profile" class="страница">
             <div style="text-align: center; padding: 20px;">
-                <div id="big-ava" style="width: 100px; height: 100px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover;"></div>
-                <h2 id="user-name" style="font-family: 'Playfair Display'; font-size: 28px;">Diva</h2>
+                <div id="big-ava" style="width: 110px; height: 110px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover;"></div>
+                <h2 id="user-name" style="font-family: 'Playfair Display'; font-size: 28px;">Участница</h2>
                 <p id="user-rank-label" style="font-size: 10px; letter-spacing: 3px; color: var(--gold); margin-top: 10px;"></p>
             </div>
         </div>
@@ -144,26 +143,25 @@
     </div>
 
     <nav class="tab-bar">
-        <a href="javascript:void(0)" class="tab-item active" onclick="showPage('home', this)">Home<div class="tab-dot"></div></a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showPage('rating', this)">Elite<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item active" onclick="showPage('home', this)">Студия<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showPage('rating', this)">Топ<div class="tab-dot"></div></a>
         <div class="scan-circle" onclick="scanQR()">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.2"><path d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"></path></svg>
         </div>
-        <a href="javascript:void(0)" class="tab-item admin-only" onclick="showPage('journal', this)">CRM<div class="tab-dot"></div></a>
-        <a href="javascript:void(0)" class="tab-item" onclick="showPage('profile', this)">Profile<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item admin-only" onclick="showPage('journal', this)">Журнал<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showPage('profile', this)">Профиль<div class="tab-dot"></div></a>
     </nav>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
 
-        // КОНФИГУРАЦИЯ (Замени ID на свои)
         const ADMIN_IDS = [123456789, 7461427508]; 
-        const STATUSES = ["Novice", "Student", "Grace", "Aesthetic", "Muse", "Ambassador", "Star", "Premium Diva", "Platinum Diva", "Icon"];
+        const СТАТУСЫ = ["Начало пути", "Ученица", "Грация", "Эстетика", "Муза", "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона"];
         
         let state = {
             xp: parseInt(localStorage.getItem('hhe_xp')) || 0,
-            name: tg.initDataUnsafe.user?.first_name || "Diva",
+            name: tg.initDataUnsafe.user?.first_name || "Участница",
             id: tg.initDataUnsafe.user?.id
         };
 
@@ -182,12 +180,12 @@
             const idx = Math.min(Math.floor(state.xp / 100), 9);
             const curXP = state.xp % 100;
 
-            document.getElementById('status-name').innerText = STATUSES[idx];
+            document.getElementById('status-name').innerText = СТАТУСЫ[idx];
             document.getElementById('xp-fill').style.width = curXP + '%';
             document.getElementById('xp-current').innerText = curXP + ' XP';
             
             document.getElementById('user-name').innerText = state.name;
-            document.getElementById('user-rank-label').innerText = STATUSES[idx].toUpperCase();
+            document.getElementById('user-rank-label').innerText = СТАТУСЫ[idx].toUpperCase();
             const img = `https://ui-avatars.com/api/?name=${state.name}&background=080808&color=C5A059&size=200`;
             document.getElementById('big-ava').style.backgroundImage = `url(${img})`;
 
@@ -202,7 +200,7 @@
             list.innerHTML = MOCK_STUDENTS.map(s => `
                 <div class="student-row">
                     <div><span style="font-size:14px; font-weight:600;">${s.name}</span><br><small style="color:var(--gold); font-size:9px;">${s.xp} XP</small></div>
-                    <button class="present-btn ${s.present?'on':''}" onclick="toggleStudent(${s.id})">${s.present?'PRESENT':'ABSENT'}</button>
+                    <button class="present-btn ${s.present?'on':''}" onclick="toggleStudent(${s.id})">${s.present?'ОТМЕЧЕНА':'НЕТ'}</button>
                 </div>
             `).join('');
         }
@@ -224,12 +222,12 @@
 
         function openBox() {
             if(localStorage.getItem('hhe_box_claimed') == new Date().getDate()) {
-                tg.showAlert("Elite Box will be available tomorrow. ✨");
+                tg.showAlert("Подарок будет доступен завтра. ✨");
                 return;
             }
             localStorage.setItem('hhe_box_claimed', new Date().getDate());
             tg.HapticFeedback.impactOccurred('medium');
-            tg.showAlert("Luxe Gift: +25 XP added to your status.");
+            tg.showAlert("Вы в движении! Начислено +25 XP.");
             coachReward(25);
         }
 
@@ -242,8 +240,8 @@
         }
 
         function scanQR() {
-            tg.showScanQrPopup({ text: "Scan Member Pass" }, (text) => {
-                if(text.includes("HHE_XP")) {
+            tg.showScanQrPopup({ text: "Сканируйте пропуск студии" }, (text) => {
+                if(text.includes("MOVE_XP")) {
                     coachReward(30);
                     tg.closeScanQrPopup();
                 }
@@ -252,7 +250,7 @@
 
         function updateLeaderboard() {
             const list = document.getElementById('leaderboard');
-            const leaders = [{n: "Elena P. ✨", x: 5000}, {n: state.name, x: state.xp, me: true}, {n: "Mariya", x: 920}].sort((a,b) => b.x - a.x);
+            const leaders = [{n: "Алена П. ✨", x: 5000}, {n: state.name, x: state.xp, me: true}, {n: "Мария", x: 920}].sort((a,b) => b.x - a.x);
             list.innerHTML = leaders.map((u, i) => `
                 <div class="блок" style="display:flex; justify-content:space-between; align-items:center; ${u.me?'border-color:var(--gold)':''}">
                     <span style="font-size:12px;">#${i+1} ${u.n}</span>
