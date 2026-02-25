@@ -3,197 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>High Heels Elite</title>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>High Heels Elite | Discipline Mode</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
     <style>
         :root {
             --primary: #D81B60; --primary-light: #FCE4EC; --accent: #C5A059;
-            --text-main: #1A1A1A; --text-sec: #757575; --radius: 24px;
+            --danger: #ff4444; --text-main: #1A1A1A; --radius: 28px;
         }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #fff; color: var(--text-main); font-family: 'Lato', sans-serif; margin: 0; padding-bottom: 40px; transition: background 0.3s; }
 
-        body {
-            background: #FFFFFF; color: var(--text-main); font-family: 'Lato', sans-serif;
-            margin: 0; padding-bottom: 40px; overflow-x: hidden;
-        }
-
-        /* --- ЗАСТАВКА (Исправлен z-index) --- */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #12050D; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.6s ease-out;
-        }
+        /* Splash */
+        #splash-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #12050D; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: opacity 0.8s; }
         .splash-logo { font-family: 'Playfair Display', serif; font-size: 32px; color: white; }
 
-        header {
-            padding: 20px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);
-            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-        }
+        header { padding: 20px; background: rgba(255,255,255,0.85); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
         header h1 { margin: 0; font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary); }
 
-        .page { display: none; padding: 20px; animation: slideUp 0.4s ease-out forwards; }
+        .page { display: none; padding: 20px; animation: slideUp 0.4s ease forwards; }
         .page.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* BENTO */
-        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
-        .bento-item { 
-            background: #fff; border-radius: var(--radius); padding: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03);
-        }
-        .bento-wide { grid-column: span 2; }
-        .bento-accent { background: var(--primary); color: white; }
-        .bento-gold { background: var(--accent); color: white; }
+        /* Loyalty Card */
+        #loyalty-card { padding: 22px; border-radius: var(--radius); color: white; margin-bottom: 20px; transition: all 0.5s; position: relative; overflow: hidden; }
+        .status-gold { background: linear-gradient(135deg, #12050D 0%, #3a0a22 100%); box-shadow: 0 15px 30px rgba(216, 27, 96, 0.2); }
+        .status-lost { background: linear-gradient(135deg, #555 0%, #222 100%); filter: grayscale(1); opacity: 0.8; }
 
-        /* КАРТОЧКИ */
-        .course-card { background: white; border-radius: var(--radius); overflow: hidden; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .course-img { width: 100%; height: 200px; object-fit: cover; }
-        .btn-action { 
-            background: var(--text-main); color: white; border: none; width: 100%;
-            padding: 16px; border-radius: 50px; font-weight: 700; cursor: pointer;
-        }
+        .progress-bar { background: rgba(255,255,255,0.1); height: 8px; border-radius: 10px; margin-top: 15px; }
+        .progress-fill { background: linear-gradient(90deg, var(--primary), #FF4081); height: 100%; width: 50%; border-radius: 10px; transition: width 1s; }
 
-        .legal-box { font-size: 11px; color: var(--text-sec); background: #f9f9f9; padding: 15px; border-radius: 15px; margin-top: 20px; }
+        .stat-card { background: #fdf2f7; padding: 18px; border-radius: 22px; flex: 1; text-align: center; border: 1px solid var(--primary-light); }
+        .stat-value { display: block; font-size: 24px; font-weight: 900; color: var(--primary); }
+        .stat-minus { color: var(--danger) !important; animation: shake 0.5s; }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+        .btn-action { background: var(--text-main); color: white; border: none; width: 100%; padding: 18px; border-radius: 50px; font-weight: 700; margin-top: 15px; }
+        .daily-btn { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: 700; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px; }
     </style>
 </head>
 <body>
-
     <div id="splash-screen"><div class="splash-logo">High Heels Elite</div></div>
-
+    
     <header>
         <h1 id="header-title">Studio</h1>
-        <div id="mini-avatar" onclick="navigateTo('profile')" style="width:35px; height:35px; border-radius:50%; background-size:cover; background-color: var(--primary);"></div>
+        <div id="mini-avatar" onclick="navigateTo('profile')" style="width:38px; height:38px; border-radius:50%; background-size:cover; background-color: var(--primary);"></div>
     </header>
 
     <div id="page-home" class="page active">
-        <div class="bento-grid">
-            <div class="bento-item bento-wide" onclick="navigateTo('profile')">
-                <div id="welcome-name" style="font-family:'Playfair Display'; font-size:20px;">Привет, Diva</div>
-                <div style="font-size: 12px; opacity: 0.7;">Статус: Resident Diva</div>
+        <div id="loyalty-card" class="status-gold">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span id="status-label" style="font-weight:700; letter-spacing:1px;">GOLD RESIDENT</span>
+                <span id="xp-text" style="font-size:12px;">50 / 100 XP</span>
             </div>
-            <div class="bento-item bento-accent" onclick="navigateTo('online')">
-                <div style="font-size: 24px;">📺</div>
-                <div style="font-weight:700;">Онлайн</div>
-            </div>
-            <div class="bento-item bento-gold" onclick="navigateTo('offline')">
-                <div style="font-size: 24px;">👠</div>
-                <div style="font-weight:700;">В зале</div>
-            </div>
+            <div class="progress-bar"><div class="progress-fill" id="xp-fill"></div></div>
+            <div id="discipline-msg" style="font-size: 10px; margin-top: 10px; opacity: 0.8;">Тренировки идут по графику ✓</div>
         </div>
-        
-        <div style="margin-top: 30px; padding: 15px; background: var(--primary-light); border-radius: var(--radius); display: flex; align-items: center; gap: 12px;">
-            <input type="checkbox" id="legal-check" style="width:20px; height:20px;">
-            <label for="legal-check" style="font-size: 11px;">Я согласна с правилами и подтверждаю отсутствие мед. противопоказаний.</label>
-        </div>
-    </div>
 
-    <div id="page-catalog" class="page">
-        <div id="catalog-container"></div>
+        <div style="display:flex; gap:12px; margin-bottom:20px;">
+            <div class="stat-card"><span class="stat-value" id="stats-bonus">150</span><span style="font-size:10px;">Diva-коинов</span></div>
+            <div class="stat-card"><span class="stat-value" id="stats-streak">3 дня</span><span style="font-size:10px;">Стрик</span></div>
+        </div>
+
+        <button class="daily-btn" onclick="checkIn()">
+            <span>🔥</span> Отметиться на тренировке
+        </button>
+
+        <div style="margin-top:20px; color: var(--text-sec); font-size: 11px; text-align: center;">
+            * Пропуск отметки более 24 часов ведет к потере 50 коинов и XP.
+        </div>
     </div>
 
     <div id="page-profile" class="page">
-        <div style="text-align: center;">
-            <div id="big-avatar" style="width:100px; height:100px; border-radius:50%; margin: 0 auto 15px; background-size:cover; border: 3px solid var(--accent);"></div>
-            <h2 id="user-full-name" style="font-family:'Playfair Display'; margin:0;">Diva</h2>
+        <div style="text-align:center; margin-bottom:20px;">
+            <div id="big-avatar" style="width:90px; height:90px; border-radius:50%; margin:0 auto 15px; background-size:cover; border:3px solid var(--accent);"></div>
+            <h2 id="user-full-name">Diva</h2>
+            <p id="profile-status-desc" style="color: var(--accent); font-weight: 700;">PRO LEVEL</p>
         </div>
-        <div class="legal-box">
-            <b>Disclaimer:</b> Учредитель не несет ответственности за инженерные сети зданий и травмы при самостоятельном обучении.
-        </div>
+        <button class="btn-action" style="background: var(--danger);" onclick="simulateMiss()">Имитировать пропуск (Тест)</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        tg.ready(); tg.expand();
+        const user = tg.initDataUnsafe.user || { first_name: "Diva" };
 
-        const user = tg.initDataUnsafe.user || { first_name: "Diva", id: 0 };
+        let xp = 50;
+        let bonus = 150;
+        let streak = 3;
+        let isLost = false;
 
-        // Инициализация интерфейса
         function initApp() {
             const photo = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=D81B60&color=fff`;
-            document.getElementById('welcome-name').innerText = `Привет, ${user.first_name}`;
-            document.getElementById('user-full-name').innerText = `${user.first_name} ${user.last_name || ''}`;
+            document.getElementById('user-full-name').innerText = user.first_name;
             document.getElementById('mini-avatar').style.backgroundImage = `url(${photo})`;
             document.getElementById('big-avatar').style.backgroundImage = `url(${photo})`;
             
-            // Убираем заставку
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 600);
-            }, 2000);
+            setTimeout(() => { 
+                document.getElementById('splash-screen').style.opacity='0'; 
+                setTimeout(()=>document.getElementById('splash-screen').style.display='none',600); 
+            }, 1500);
+            updateUI();
         }
 
-        function navigateTo(pageId) {
-            tg.HapticFeedback.impactOccurred('light');
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            
-            if (pageId === 'home') {
-                document.getElementById('page-home').classList.add('active');
-                document.getElementById('header-title').innerText = 'Studio';
-                tg.BackButton.hide();
-            } else if (pageId === 'profile') {
-                document.getElementById('page-profile').classList.add('active');
-                document.getElementById('header-title').innerText = 'Профиль';
-                tg.BackButton.show();
+        function checkIn() {
+            if(isLost) {
+                isLost = false;
+                xp = 50; bonus = 100; streak = 1;
+                tg.showAlert("Статус восстановлен! Не пропускай больше.");
             } else {
-                document.getElementById('page-catalog').classList.add('active');
-                document.getElementById('header-title').innerText = (pageId === 'online' ? 'Онлайн' : 'В зале');
-                tg.BackButton.show();
-                renderCatalog(pageId);
+                xp = Math.min(xp + 10, 100);
+                bonus += 20;
+                streak++;
+                confetti({ particleCount: 100, spread: 70 });
             }
+            tg.HapticFeedback.notificationOccurred('success');
+            updateUI();
+        }
+
+        function simulateMiss() {
+            tg.HapticFeedback.notificationOccurred('error');
+            document.body.style.background = "#ffebee";
+            setTimeout(() => document.body.style.background = "#fff", 500);
+
+            xp = Math.max(xp - 40, 0);
+            bonus = Math.max(bonus - 50, 0);
+            streak = 0;
+            
+            if(xp <= 20) isLost = true;
+            
+            updateUI();
+            tg.showAlert("ВНИМАНИЕ: Вы пропустили занятия! Баллы списаны, статус под угрозой.");
+            navigateTo('home');
+        }
+
+        function updateUI() {
+            const card = document.getElementById('loyalty-card');
+            const fill = document.getElementById('xp-fill');
+            const statusLabel = document.getElementById('status-label');
+            const msg = document.getElementById('discipline-msg');
+
+            fill.style.width = xp + "%";
+            document.getElementById('xp-text').innerText = `${xp} / 100 XP`;
+            document.getElementById('stats-bonus').innerText = bonus;
+            document.getElementById('stats-streak').innerText = streak + " дн.";
+
+            if(isLost) {
+                card.className = "status-lost";
+                statusLabel.innerText = "STATUS: SUSPENDED";
+                msg.innerText = "Срочно отметься, чтобы вернуть привилегии!";
+                document.getElementById('profile-status-desc').innerText = "RESTRICTED ACCESS";
+                document.getElementById('profile-status-desc').style.color = "red";
+            } else {
+                card.className = "status-gold";
+                statusLabel.innerText = xp > 80 ? "PLATINUM DIVA" : "GOLD RESIDENT";
+                msg.innerText = "Тренировки идут по графику ✓";
+                document.getElementById('profile-status-desc').innerText = "PRO LEVEL";
+                document.getElementById('profile-status-desc').style.color = "var(--accent)";
+            }
+        }
+
+        function navigateTo(p) {
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            document.getElementById('page-' + p).classList.add('active');
+            p === 'home' ? tg.BackButton.hide() : tg.BackButton.show();
         }
 
         tg.BackButton.onClick(() => navigateTo('home'));
-
-        const mockData = {
-            online: [{ id: 'on1', title: 'База: Сексуальный шаг', price: '1900 ₽', img: 'https://images.unsplash.com/photo-1547153760-18fc86324498?w=600' }],
-            offline: [{ id: 'off1', title: 'Занятие в студии', price: '1000 ₽', img: 'https://images.unsplash.com/photo-1544367563-12123d8965cd?w=600' }]
-        };
-
-        function renderCatalog(type) {
-            const container = document.getElementById('catalog-container');
-            container.innerHTML = '';
-            mockData[type].forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'course-card';
-                card.innerHTML = `
-                    <img src="${item.img}" class="course-img">
-                    <div style="padding:20px;">
-                        <div style="font-family:'Playfair Display'; font-size:20px; margin-bottom:5px;">${item.title}</div>
-                        <div style="color:var(--primary); font-weight:700; font-size:18px;">${item.price}</div>
-                        <button class="btn-action" onclick="purchase('${item.id}', '${item.title}', '${item.price}')">Записаться</button>
-                    </div>`;
-                container.appendChild(card);
-            });
-        }
-
-        function purchase(id, title, price) {
-            if (!document.getElementById('legal-check').checked) {
-                tg.showAlert("Пожалуйста, подтверди согласие с правилами на главной странице.");
-                return;
-            }
-
-            tg.showPopup({
-                title: 'Запись',
-                message: `Оформить "${title}" за ${price}?`,
-                buttons: [{id: "buy", type: "default", text: "Да"}, {type: "cancel", text: "Отмена"}]
-            }, (btn) => {
-                if (btn === 'buy') {
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                    tg.HapticFeedback.notificationOccurred('success');
-                    
-                    // Отправка боту
-                    const data = { action: 'purchase', id: id, title: title, user_id: user.id };
-                    setTimeout(() => tg.sendData(JSON.stringify(data)), 1200);
-                }
-            });
-        }
-
         initApp();
     </script>
 </body>
