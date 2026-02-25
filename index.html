@@ -3,6 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>В ДВИЖЕНИИ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { 
+            --gold: #C5A059; --dark: #080808; 
+            --border: rgba(197, 160, 89, 0.2); --glass: rgba(255, 255, 255, 0.04);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
+
+        /* Фоновая система */
+        .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.3; }
+        .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, transparent 0%, var(--dark) 95%); backdrop-filter: blur(1px); }
+
+        header { padding: 35px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); z-index: 100; position: relative; }
+        .logo-luxe { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: 7px; text-transform: uppercase; color: var(--gold); }
+
+        .container { padding: 25px; padding-bottom: 120px; height: calc(100vh - 100px); overflow-y: auto; }
+        .страница { display: none; animation: fadeIn 0.6s ease; }
+        .страница.активна { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Контент */
+        .manifesto-box { text-align: center; padding: 50px 10px; }
+        .manifesto-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; line-height: 1.4; margin-bottom: 10px; }
+        .streak-badge { font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 30px; display: block; }
+
+        .luxe-card { background: var(--glass); border: 1px solid var(--border); padding: 35px 20px; text-align: center; backdrop-filter: blur(15px); margin-bottom: 20px; }
+        .rank-title { font-family: 'Playfair Display', serif; font-size: 30px; font-style: italic; color: var(--gold); margin: 10px 0; }
+        .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 25px 0; position: relative; }
+        .progress-fill { height: 1px; background: var(--gold); position: absolute; left: 0; transition: 2s; box-shadow: 0 0 10px var(--gold); }
+
+        .luxe-btn { background: transparent; border: 1px solid var(--border); color: var(--gold); padding: 20px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; width: 100%; margin-bottom: 15px; transition: 0.3s; }
+        .luxe-btn:active { background: var(--gold); color: black; }
+
+        .avatar-upload { width: 110px; height: 110px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover; background-position: center; position: relative; cursor: pointer; }
+
+        /* Навигация */
+        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(8,8,8,0.98); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid var(--border); z-index: 1000; }
+        .nav-group { display: flex; gap: 25px; align-items: center; }
+        .tab-item { color: #444; font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none; display: flex; flex-direction: column; }
+        .tab-item.active { color: var(--gold); }
+        .tab-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; margin-top: 4px; opacity: 0; align-self: center; }
+        .tab-item.active .tab-dot { opacity: 1; }
+
+        .scan-btn { display: flex; flex-direction: column; align-items: center; color: var(--gold); }
+        .scan-btn span { font-size: 8px; text-transform: uppercase; margin-top: 4px; opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <div class="background-wrapper">
+        <video autoplay muted loop playsinline id="bg-video"><source src="bg_video.mp4" type="video/mp4"></video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <header><div class="logo-luxe">В ДВИЖЕНИИ</div></header>
+
+    <div class="container">
+        <div id="page-move" class="страница активна">
+            <div class="manifesto-box">
+                <span class="streak-badge">🔥 3 дня в движении</span>
+                <p class="manifesto-text">Двигаться. Чувствовать.<br>Сделать себя самой.</p>
+            </div>
+            <button class="luxe-btn" onclick="showPage('page-profile', document.getElementById('nav-user-item'))">Оффлайн Студия</button>
+            <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">Онлайн Академия</button>
+        </div>
+
+        <div id="page-profile" class="страница">
+            <input type="file" id="ava-input" hidden accept="image/*" onchange="uploadPhoto(this)">
+            <div id="user-ava" class="avatar-upload" onclick="document.getElementById('ava-input').click()"></div>
+            
+            <div class="luxe-card">
+                <p style="font-size: 8px; letter-spacing: 2px; opacity: 0.6;">ВАШЕ МАСТЕРСТВО</p>
+                <div class="rank-title" id="status-name">Дива</div>
+                <div class="progress-line"><div id="xp-fill" class="progress-fill"></div></div>
+                <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--gold);">
+                    <span id="xp-current">0 XP</span>
+                    <span>NEXT LEVEL</span>
+                </div>
+            </div>
+            <button class="luxe-btn" onclick="openBox()">Получить комплимент дня</button>
+        </div>
+
+        <div id="page-rating" class="страница">
+            <h2 style="font-family:'Playfair Display'; text-align:center; color:var(--gold); margin-bottom:30px; font-style:italic;">Elite Top</h2>
+            <div id="leaderboard"></div>
+        </div>
+    </div>
+
+    <nav class="tab-bar">
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="tab-item active" onclick="showPage('page-move', this)">Движение<div class="tab-dot"></div></a>
+            <a href="javascript:void(0)" id="nav-user-item" class="tab-item" onclick="showPage('page-profile', this)">
+                <span id="nav-user-name">...</span><div class="tab-dot"></div>
+            </a>
+            <a href="javascript:void(0)" class="tab-item" onclick="showPage('page-rating', this)">Топ<div class="tab-dot"></div></a>
+        </div>
+        <div class="nav-group">
+            <div class="scan-btn" onclick="scanQR()">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"></path></svg>
+                <span>Скан</span>
+            </div>
+        </div>
+    </nav>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand();
+
+        const СТАТУСЫ = ["Начало", "Ученица", "Грация", "Эстетика", "Муза", "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона"];
+        
+        let state = {
+            xp: parseInt(localStorage.getItem('move_xp')) || 0,
+            name: tg.initDataUnsafe.user?.first_name || "Дива",
+            photo: localStorage.getItem('move_photo') || ''
+        };
+
+        function uploadPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => { state.photo = e.target.result; localStorage.setItem('move_photo', state.photo); render(); }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function render() {
+            const idx = Math.min(Math.floor(state.xp / 100), 9);
+            document.getElementById('status-name').innerText = СТАТУСЫ[idx];
+            document.getElementById('xp-fill').style.width = (state.xp % 100) + '%';
+            document.getElementById('xp-current').innerText = (state.xp % 100) + ' XP';
+            document.getElementById('nav-user-name').innerText = state.name;
+            
+            const ava = document.getElementById('user-ava');
+            ava.style.backgroundImage = state.photo ? `url(${state.photo})` : `url('https://ui-avatars.com/api/?name=${state.name}&background=080808&color=C5A059')`;
+            
+            // Рейтинг
+            document.getElementById('leaderboard').innerHTML = [{n:"Алена П.", x:5000}, {n:state.name, x:state.xp, me:true}].sort((a,b)=>b.x-a.x).map((u,i)=>`
+                <div class="luxe-card" style="padding:15px; display:flex; justify-content:space-between; ${u.me?'border-color:var(--gold)':''}">
+                    <span>${i+1}. ${u.n}</span><b>${u.x} XP</b>
+                </div>`).join('');
+        }
+
+        function addXP(p) { state.xp += p; localStorage.setItem('move_xp', state.xp); confetti({ particleCount: 50, colors: ['#C5A059'], origin: { y: 0.8 } }); render(); }
+        
+        function openBox() {
+            if(localStorage.getItem('move_claimed') == new Date().getDate()) { tg.showAlert("Ждем тебя завтра! ✨"); return; }
+            localStorage.setItem('move_claimed', new Date().getDate());
+            tg.showAlert("Твоё движение безупречно. +25 XP.");
+            addXP(25);
+        }
+
+        function showPage(pageId, el) {
+            document.querySelectorAll('.страница').forEach(p => p.classList.remove('активна'));
+            document.getElementById(pageId).classList.add('активна');
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            tg.HapticFeedback.selectionChanged();
+        }
+
+        function scanQR() {
+            tg.showScanQrPopup({ text: "Сканируйте пропуск" }, (text) => { if(text.includes("MOVE")) { addXP(30); tg.closeScanQrPopup(); } });
+        }
+
+        render();
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>В ДВИЖЕНИИ | LUXE</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
