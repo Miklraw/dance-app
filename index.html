@@ -12,12 +12,10 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
 
-        /* Фон */
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.35; }
         .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, transparent 0%, var(--dark) 95%); backdrop-filter: blur(1px); }
 
-        /* Шапка */
         header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); z-index: 100; position: relative; }
         .logo-luxe { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: 7px; text-transform: uppercase; color: var(--gold); }
         .page-subtitle { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #fff; margin-top: 10px; opacity: 0.7; display: none; }
@@ -27,16 +25,17 @@
         .страница.активна { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Стили Манифеста внутри раздела Двигаться */
+        /* Главная */
+        .intro-box { text-align: center; padding: 20px 10px 40px; }
+        .intro-title { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--gold); letter-spacing: 3px; margin-bottom: 25px; text-transform: uppercase; }
+        .promo-desc { font-size: 13px; line-height: 1.9; color: #e0e0e0; letter-spacing: 0.5px; max-width: 310px; margin: 0 auto; font-weight: 300; }
+        .highlight-text { color: var(--gold); }
+        .divider-line { width: 40px; height: 1px; background: var(--gold); margin: 25px auto; opacity: 0.4; }
+
+        /* Раздел Двигаться */
         .move-manifesto { text-align: center; padding: 20px 0 40px; }
         .manifesto-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 24px; line-height: 1.5; color: #fff; margin-bottom: 10px; }
         
-        /* Главная страница */
-        .intro-box { text-align: center; padding: 60px 10px; }
-        .intro-title { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--gold); letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
-        .promo-desc { font-size: 13px; line-height: 1.8; color: #ccc; letter-spacing: 1px; max-width: 280px; margin: 0 auto; font-weight: 200; }
-
-        /* Кнопки */
         .luxe-btn { 
             background: var(--glass); border: 1px solid var(--border); color: var(--gold); 
             padding: 22px; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; 
@@ -47,17 +46,17 @@
         /* Профиль */
         .avatar-upload { width: 100px; height: 100px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover; background-position: center; border-radius: 2px; }
         .streak-info { font-size: 10px; color: var(--gold); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; display: block; }
-        .luxe-card { background: var(--glass); border: 1px solid var(--border); padding: 30px 20px; text-align: center; margin-bottom: 20px; position: relative; }
+        .luxe-card { background: var(--glass); border: 1px solid var(--border); padding: 30px 20px; text-align: center; margin-bottom: 20px; }
         .rank-title { font-family: 'Playfair Display', serif; font-size: 28px; font-style: italic; color: var(--gold); margin: 5px 0; }
         .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 20px 0; position: relative; }
         .progress-fill { height: 1px; background: var(--gold); position: absolute; left: 0; transition: 2s; box-shadow: 0 0 8px var(--gold); }
 
-        /* Таббар островком */
+        /* Таббар */
         .tab-bar { 
-            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 70px; 
+            position: fixed; bottom: 20px; left: 20px; right: 20px; height: 75px; 
             background: rgba(10, 10, 10, 0.95); display: flex; align-items: center; 
             justify-content: space-around; border: 1px solid var(--border); border-radius: 25px; 
-            z-index: 1000; backdrop-filter: blur(20px);
+            z-index: 1000; backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
         .tab-item { 
             color: #666; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; 
@@ -65,9 +64,9 @@
             flex: 1; transition: 0.3s; height: 100%; justify-content: center;
         }
         .tab-item.active { color: var(--gold); }
-        .tab-item svg { margin-bottom: 4px; stroke: currentColor; transition: 0.3s; }
+        .tab-item svg { margin-bottom: 5px; stroke: currentColor; transition: 0.3s; width: 22px; height: 22px; }
         .tab-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; margin-top: 4px; opacity: 0; }
-        .tab-item.active .tab-dot { opacity: 1; box-shadow: 0 0 8px var(--gold); }
+        .tab-item.active .tab-dot { opacity: 1; }
 
         .leader-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--glass); font-size: 11px; }
     </style>
@@ -87,9 +86,15 @@
     <div class="container">
         <div id="page-home" class="страница активна">
             <div class="intro-box">
-                <div class="intro-title">Добро пожаловать</div>
+                <div class="intro-title">Твое время бесценно</div>
                 <p class="promo-desc">
-                    Эксклюзивное пространство для тех, кто выбирает эстетику и осознанный прогресс. Твой путь к идеальной грации начинается здесь.
+                    Больше не нужно тратить энергию на <span class="highlight-text">хаотичный поиск</span> тренировок и попытки выстроить график в одиночку.
+                    <br><br>
+                    Мы создали единую систему твоего развития. В студии или онлайн — ты всегда движешься по четкому пути к результату.
+                    <div class="divider-line"></div>
+                    Получай баллы за каждое занятие, отслеживай свой рост и вдохновляйся результатами в <span class="highlight-text">списке лучших</span>.
+                    <br><br>
+                    Здесь нет места сомнениям. Только <span class="highlight-text">система, грация и ты</span>.
                 </p>
             </div>
         </div>
@@ -108,9 +113,9 @@
 
         <div id="page-offline-menu" class="страница">
             <button class="luxe-btn" onclick="triggerHaptic()">Курсы</button>
-            <button class="luxe-btn" onclick="triggerHaptic()">Мастер классы</button>
+            <button class="luxe-btn" onclick="triggerHaptic()">Мастер-классы</button>
             <button class="luxe-btn" onclick="triggerHaptic()">Мероприятия</button>
-            <button class="luxe-btn" onclick="triggerHaptic(); tg.openLink('https://t.me/platonovalena')">Тех.поддержка</button>
+            <button class="luxe-btn" onclick="triggerHaptic(); tg.openLink('https://t.me/platonovalena')">Поддержка</button>
             <button class="luxe-btn" style="border:none; opacity:0.5; margin-top:10px;" onclick="btnClick('page-move-choice')">← Назад</button>
         </div>
 
@@ -120,35 +125,35 @@
             
             <div class="luxe-card">
                 <span class="streak-info">🔥 3 дня в движении</span>
-                <p style="font-size: 7px; letter-spacing: 2px; opacity: 0.5; text-transform: uppercase;">Статус</p>
+                <p style="font-size: 7px; letter-spacing: 2px; opacity: 0.5; text-transform: uppercase;">Твой ранг</p>
                 <div class="rank-title" id="status-name">Дива</div>
                 <div class="progress-line"><div id="xp-fill" class="progress-fill"></div></div>
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--gold);">
-                    <span id="xp-current">0 XP</span>
-                    <span>ELITE TOP</span>
+                    <span id="xp-current">0 баллов</span>
+                    <span>До следующего ранга</span>
                 </div>
             </div>
 
             <button class="luxe-btn" style="border-color: var(--gold);" onclick="scanQR()">СКАНИРОВАТЬ QR-КОД</button>
-            <button class="luxe-btn" onclick="openBox()">ПОЛУЧИТЬ КОМПЛИМЕНТ ДНЯ</button>
+            <button class="luxe-btn" onclick="openBox()">КОМПЛИМЕНТ ДНЯ</button>
 
-            <div style="font-family: 'Playfair Display'; font-size: 18px; color: var(--gold); text-align: center; margin-top: 35px; font-style: italic;">Elite Top</div>
+            <div style="font-family: 'Playfair Display'; font-size: 18px; color: var(--gold); text-align: center; margin-top: 35px; font-style: italic;">Список лучших</div>
             <div id="leaderboard" class="luxe-card" style="padding: 10px; text-align: left; margin-top: 15px;"></div>
         </div>
     </div>
 
     <nav class="tab-bar">
         <a href="javascript:void(0)" class="tab-item" onclick="showPage('page-move-choice', this)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M13 5l7 7-7 7M5 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             Двигаться
             <div class="tab-dot"></div>
         </a>
         <a href="javascript:void(0)" class="tab-item active" onclick="showPage('page-home', this)">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             Главная
         </a>
         <a href="javascript:void(0)" class="tab-item" onclick="showPage('page-profile', this)">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span id="nav-user-name">Профиль</span>
             <div class="tab-dot"></div>
         </a>
@@ -172,7 +177,7 @@
             const idx = Math.min(Math.floor(state.xp / 100), 9);
             document.getElementById('status-name').innerText = СТАТУСЫ[idx];
             document.getElementById('xp-fill').style.width = (state.xp % 100) + '%';
-            document.getElementById('xp-current').innerText = (state.xp % 100) + ' XP';
+            document.getElementById('xp-current').innerText = (state.xp % 100) + ' баллов';
             document.getElementById('nav-user-name').innerText = state.name;
             const ava = document.getElementById('user-ava');
             ava.style.backgroundImage = state.photo ? `url(${state.photo})` : `url('https://ui-avatars.com/api/?name=${state.name}&background=080808&color=C5A059')`;
@@ -180,7 +185,7 @@
             const leaders = [{n: "Алена П.", x: 5000}, {n: state.name, x: state.xp, me: true}, {n: "Мария", x: 420}].sort((a,b) => b.x - a.x);
             document.getElementById('leaderboard').innerHTML = leaders.map((u, i) => `
                 <div class="leader-item" style="${u.me ? 'color: var(--gold); font-weight: bold;' : ''}">
-                    <span>${i+1}. ${u.n}</span><span>${u.x} XP</span>
+                    <span>${i+1}. ${u.n}</span><span>${u.x} баллов</span>
                 </div>`).join('');
         }
 
