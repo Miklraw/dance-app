@@ -8,53 +8,65 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        :root { --gold: #C5A059; --dark: #080808; --border: rgba(197, 160, 89, 0.2); --glass: rgba(255, 255, 255, 0.04); }
+        :root { --gold: #C5A059; --dark: #080808; --border: rgba(197, 160, 89, 0.3); --glass: rgba(255, 255, 255, 0.06); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
 
-        /* Фоновая система */
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
         #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.35; }
         .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, transparent 0%, var(--dark) 95%); backdrop-filter: blur(1px); }
 
-        header { padding: 35px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); z-index: 100; position: relative; }
+        header { padding: 30px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); z-index: 100; position: relative; }
         .logo-luxe { font-family: 'Playfair Display', serif; font-size: 20px; letter-spacing: 7px; text-transform: uppercase; color: var(--gold); }
+        .page-subtitle { font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: #fff; margin-top: 10px; opacity: 0.7; display: none; }
 
-        .container { padding: 25px; padding-bottom: 120px; height: calc(100vh - 100px); overflow-y: auto; }
+        .container { padding: 25px; padding-bottom: 140px; height: calc(100vh - 100px); overflow-y: auto; }
         .страница { display: none; animation: fadeIn 0.4s ease forwards; }
         .страница.активна { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Манифест */
-        .manifesto-box { text-align: center; padding: 60px 10px; }
-        .manifesto-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; line-height: 1.5; color: #fff; margin-bottom: 20px; }
+        /* Главная */
+        .manifesto-box { text-align: center; padding: 40px 10px; }
+        .manifesto-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; line-height: 1.6; color: #fff; margin-bottom: 20px; }
+        .promo-desc { font-size: 12px; line-height: 1.8; color: #ccc; letter-spacing: 1px; max-width: 280px; margin: 0 auto; font-weight: 200; }
         
         /* Кнопки */
         .luxe-btn { 
             background: var(--glass); border: 1px solid var(--border); color: var(--gold); 
             padding: 22px; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; 
             cursor: pointer; width: 100%; margin-bottom: 15px; backdrop-filter: blur(10px); 
-            transition: 0.3s;
         }
         .luxe-btn:active { background: var(--gold); color: black; }
 
-        /* Профиль и Карта */
-        .avatar-upload { width: 110px; height: 110px; border: 1px solid var(--gold); margin: 0 auto 25px; background-size: cover; background-position: center; cursor: pointer; border-radius: 2px; }
-        .luxe-card { background: var(--glass); border: 1px solid var(--border); padding: 35px 20px; text-align: center; margin-bottom: 20px; }
-        .rank-title { font-family: 'Playfair Display', serif; font-size: 32px; font-style: italic; color: var(--gold); margin: 10px 0; }
-        .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 25px 0; position: relative; }
+        /* Профиль */
+        .avatar-upload { width: 100px; height: 100px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover; background-position: center; border-radius: 2px; }
+        .streak-info { font-size: 10px; color: var(--gold); letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; display: block; }
+        .luxe-card { background: var(--glass); border: 1px solid var(--border); padding: 30px 20px; text-align: center; margin-bottom: 20px; position: relative; overflow: hidden; }
+        .rank-title { font-family: 'Playfair Display', serif; font-size: 28px; font-style: italic; color: var(--gold); margin: 5px 0; }
+        .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 20px 0; position: relative; }
         .progress-fill { height: 1px; background: var(--gold); position: absolute; left: 0; transition: 2s; box-shadow: 0 0 8px var(--gold); }
 
-        /* Таббар */
-        .tab-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(8,8,8,0.98); display: flex; align-items: center; justify-content: space-around; border-top: 1px solid var(--border); z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
-        .tab-item { color: #444; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .tab-item.active { color: var(--gold); }
-        .tab-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; margin-top: 6px; opacity: 0; }
-        .tab-item.active .tab-dot { opacity: 1; }
+        /* Улучшенный Таббар */
+        .tab-bar { 
+            position: fixed; bottom: 15px; left: 15px; right: 15px; height: 75px; 
+            background: rgba(15, 15, 15, 0.9); 
+            display: flex; align-items: center; justify-content: space-around; 
+            border: 1px solid var(--border); border-radius: 20px; 
+            z-index: 1000; backdrop-filter: blur(15px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .tab-item { 
+            color: #888; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; 
+            text-decoration: none; display: flex; flex-direction: column; align-items: center; 
+            flex: 1; transition: 0.3s; height: 100%; justify-content: center;
+        }
+        .tab-item.active { color: var(--gold); background: rgba(197, 160, 89, 0.05); border-radius: 15px; }
+        .tab-item svg { margin-bottom: 4px; opacity: 0.6; transition: 0.3s; }
+        .tab-item.active svg { opacity: 1; stroke: var(--gold); }
+        .tab-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; margin-top: 4px; opacity: 0; }
+        .tab-item.active .tab-dot { opacity: 1; box-shadow: 0 0 5px var(--gold); }
 
-        /* Рейтинг */
-        .top-section-title { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--gold); margin: 30px 0 15px; font-style: italic; text-align: center; }
-        .leader-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--glass); font-size: 12px; }
+        .leader-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--glass); font-size: 11px; }
     </style>
 </head>
 <body>
@@ -64,20 +76,25 @@
         <div class="video-overlay"></div>
     </div>
 
-    <header><div class="logo-luxe">В ДВИЖЕНИИ</div></header>
+    <header>
+        <div class="logo-luxe">В ДВИЖЕНИИ</div>
+        <div id="header-subtitle" class="page-subtitle">Двигаться</div>
+    </header>
 
     <div class="container">
         <div id="page-home" class="страница активна">
             <div class="manifesto-box">
                 <p class="manifesto-text">Двигаться. Чувствовать.<br>Сделать себя самой.</p>
-                <span style="font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase;">🔥 3 дня в движении</span>
+                <p class="promo-desc">
+                    Эксклюзивное пространство для тех, кто выбирает эстетику и прогресс. Прокачивай мастерство в студии и онлайн, отслеживай свой рост и будь в топе лучших.
+                </p>
             </div>
         </div>
 
         <div id="page-move-choice" class="страница">
             <div style="padding-top: 20px;">
                 <button class="luxe-btn" onclick="btnClick('page-offline-menu')">ОФФЛАЙН (В СТУДИИ)</button>
-                <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">ОНЛАЙН (АКАДЕМИЯ)</button>
+                <button class="luxe-btn" onclick="triggerHaptic(); tg.openLink('https://platonovalena.zenclass.ru')">ОНЛАЙН (АКАДЕМИЯ)</button>
             </div>
         </div>
 
@@ -94,27 +111,38 @@
             <div id="user-ava" class="avatar-upload" onclick="document.getElementById('ava-input').click()"></div>
             
             <div class="luxe-card">
-                <p style="font-size: 8px; letter-spacing: 2px; opacity: 0.6;">ВАШЕ МАСТЕРСТВО</p>
+                <span class="streak-info">🔥 3 дня в движении</span>
+                <p style="font-size: 7px; letter-spacing: 2px; opacity: 0.5; text-transform: uppercase;">Ранг мастерства</p>
                 <div class="rank-title" id="status-name">Дива</div>
                 <div class="progress-line"><div id="xp-fill" class="progress-fill"></div></div>
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--gold);">
                     <span id="xp-current">0 XP</span>
-                    <span>NEXT LEVEL</span>
+                    <span>ELITE LEVEL</span>
                 </div>
             </div>
 
             <button class="luxe-btn" style="border-color: var(--gold);" onclick="scanQR()">СКАНИРОВАТЬ QR-КОД</button>
             <button class="luxe-btn" onclick="openBox()">ПОЛУЧИТЬ КОМПЛИМЕНТ ДНЯ</button>
 
-            <div class="top-section-title">Elite Top</div>
-            <div id="leaderboard" class="luxe-card" style="padding: 10px; text-align: left;"></div>
+            <div style="font-family: 'Playfair Display'; font-size: 18px; color: var(--gold); text-align: center; margin-top: 30px; font-style: italic;">Elite Top</div>
+            <div id="leaderboard" class="luxe-card" style="padding: 10px; text-align: left; margin-top: 15px;"></div>
         </div>
     </div>
 
     <nav class="tab-bar">
-        <a href="javascript:void(0)" class="tab-item" onclick="showPage('page-move-choice', this)">Двигаться<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item" onclick="showPage('page-move-choice', this)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+            Двигаться
+            <div class="tab-dot"></div>
+        </a>
+        <a href="javascript:void(0)" class="tab-item active" onclick="showPage('page-home', this)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            Главная
+        </a>
         <a href="javascript:void(0)" id="nav-user-item" class="tab-item" onclick="showPage('page-profile', this)">
-            <span id="nav-user-name">Дива</span><div class="tab-dot"></div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <span id="nav-user-name">Профиль</span>
+            <div class="tab-dot"></div>
         </a>
     </nav>
 
@@ -122,32 +150,15 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
 
-        // Звук
         const bellSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
         bellSound.volume = 0.4;
 
-        // Вибрация и Звук
         function triggerHaptic() { tg.HapticFeedback.impactOccurred('medium'); }
         function triggerSuccessHaptic() { tg.HapticFeedback.notificationOccurred('success'); }
-        function playSuccessSound() { 
-            bellSound.currentTime = 0; 
-            bellSound.play().catch(() => {}); 
-        }
+        function playSuccessSound() { bellSound.currentTime = 0; bellSound.play().catch(()=>{}); }
 
         const СТАТУСЫ = ["Начало", "Ученица", "Грация", "Эстетика", "Муза", "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона"];
-        let state = { 
-            xp: parseInt(localStorage.getItem('move_xp')) || 0, 
-            name: tg.initDataUnsafe.user?.first_name || "Дива", 
-            photo: localStorage.getItem('move_photo') || '' 
-        };
-
-        function uploadPhoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => { state.photo = e.target.result; localStorage.setItem('move_photo', state.photo); render(); };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
+        let state = { xp: parseInt(localStorage.getItem('move_xp')) || 0, name: tg.initDataUnsafe.user?.first_name || "Дива", photo: localStorage.getItem('move_photo') || '' };
 
         function render() {
             const idx = Math.min(Math.floor(state.xp / 100), 9);
@@ -168,6 +179,16 @@
         function showPage(pageId, el) {
             document.querySelectorAll('.страница').forEach(p => p.classList.remove('активна'));
             document.getElementById(pageId).classList.add('активна');
+            
+            const subtitle = document.getElementById('header-subtitle');
+            if(pageId === 'page-move-choice' || pageId === 'page-offline-menu') {
+                subtitle.style.display = 'block'; subtitle.innerText = 'Двигаться';
+            } else if (pageId === 'page-profile') {
+                subtitle.style.display = 'block'; subtitle.innerText = 'Профиль';
+            } else {
+                subtitle.style.display = 'none';
+            }
+
             if(el) { 
                 document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active')); 
                 el.classList.add('active'); 
@@ -175,22 +196,14 @@
             tg.HapticFeedback.selectionChanged();
         }
 
-        function btnClick(pageId) {
-            triggerHaptic();
-            showPage(pageId);
-        }
+        function btnClick(pageId) { triggerHaptic(); showPage(pageId); }
 
         function openBox() {
             triggerHaptic();
-            if(localStorage.getItem('move_claimed') == new Date().getDate()) { 
-                tg.showAlert("Ждем тебя завтра! ✨"); 
-                return; 
-            }
+            if(localStorage.getItem('move_claimed') == new Date().getDate()) { tg.showAlert("Ждем тебя завтра! ✨"); return; }
             localStorage.setItem('move_claimed', new Date().getDate());
             state.xp += 25; localStorage.setItem('move_xp', state.xp); 
-            render();
-            playSuccessSound();
-            triggerSuccessHaptic();
+            render(); playSuccessSound(); triggerSuccessHaptic();
             confetti({ particleCount: 70, colors: ['#C5A059'], origin: { y: 0.8 } });
         }
 
@@ -199,12 +212,18 @@
             tg.showScanQrPopup({ text: "Студия: Чекин" }, (text) => {
                 if(text.includes("MOVE")) { 
                     state.xp += 30; localStorage.setItem('move_xp', state.xp); 
-                    render(); 
-                    playSuccessSound();
-                    triggerSuccessHaptic();
+                    render(); playSuccessSound(); triggerSuccessHaptic();
                     tg.closeScanQrPopup(); 
                 }
             });
+        }
+
+        function uploadPhoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => { state.photo = e.target.result; localStorage.setItem('move_photo', state.photo); render(); };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
         render();
     </script>
