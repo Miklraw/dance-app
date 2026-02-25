@@ -1,54 +1,216 @@
-<input type="file" id="загрузка-фото" accept="image/*" style="display: none;" onchange="обработатьФото(event)">
-
-<script>
-    // Функция, которая вызывает окно выбора файла
-    function выбратьФайл() {
-        tg.HapticFeedback.impactOccurred('medium');
-        document.getElementById('загрузка-фото').click();
-    }
-
-    // Функция обработки и сохранения фото
-    function обработатьФото(event) {
-        const файл = event.target.files[0];
-        if (!файл) return;
-
-        const читатель = new FileReader();
-        читатель.onload = function(e) {
-            const фотоBase64 = e.target.result;
-            
-            // Сохраняем в память телефона
-            localStorage.setItem('аватар_пользователя', фотоBase64);
-            
-            // Обновляем интерфейс
-            обновитьАватарки(фотоBase64);
-            
-            tg.showAlert("Новый образ сохранен! ✨");
-        };
-        читатель.readAsDataURL(файл);
-    }
-
-    function обновитьАватарки(src) {
-        document.getElementById('мини-аватар').style.backgroundImage = `url(${src})`;
-        const большойАватар = document.getElementById('большой-аватар');
-        if (большойАватар) большойАватар.style.backgroundImage = `url(${src})`;
-    }
-
-    // Обнови функцию инициализации, чтобы она проверяла сохраненное фото
-    function инициализация() {
-        const пользователь = tg.initDataUnsafe.user || { first_name: "Дива" };
-        const сохраненноеФото = localStorage.getItem('аватар_пользователя');
-        
-        // Если пользователь сам загрузил фото - ставим его, если нет - берем из ТГ
-        const фото = сохраненноеФото || пользователь.photo_url || `https://ui-avatars.com/api/?name=${пользователь.first_name}&background=D81B60&color=fff`;
-        
-        document.getElementById('имя-пользователя').innerText = пользователь.first_name;
-        обновитьАватарки(фото);
-        
-        // Добавляем возможность клика по большому аватару для смены
-        const большойАватар = document.getElementById('большой-аватар');
-        if (большойАватар) {
-            большойАватар.onclick = выбратьФайл;
-            большойАватар.style.cursor = "pointer";
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Хай Хилс Элит</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --акцент: #E91E63; --золото: #C5A059; --темный: #12050D;
+            --тень: 0 10px 30px rgba(0,0,0,0.1);
         }
-    }
-</script>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { background: #F8F9FA; color: var(--темный); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+        .фон-свечение { position: fixed; inset: 0; background: radial-gradient(circle at 90% 10%, #fce4ec 0%, #f8f9fa 50%); z-index: -1; }
+
+        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; background: rgba(248, 249, 250, 0.8); backdrop-filter: blur(10px); }
+        .лого { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; }
+
+        .страница { display: none; padding: 0 20px 100px; animation: появление 0.4s ease forwards; }
+        .страница.активна { display: block; }
+        @keyframes появление { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* РЕГИСТРАЦИЯ */
+        #оверлей-входа { position: fixed; inset: 0; background: var(--темный); z-index: 20000; display: none; flex-direction: column; justify-content: center; padding: 40px; text-align: center; color: white; }
+
+        /* КАРТОЧКА СТАТУСА */
+        .карточка-статуса { background: var(--темный); border-radius: 30px; padding: 25px; color: white; margin-bottom: 25px; box-shadow: 0 20px 40px rgba(18,5,13,0.3); }
+        .прогресс-фон { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 15px; position: relative; overflow: hidden; }
+        .прогресс-линия { height: 100%; background: linear-gradient(90deg, var(--акцент), #FF80AB); width: 0%; transition: width 0.5s ease; box-shadow: 0 0 15px var(--акцент); }
+
+        /* КНОПКИ БЕНТО */
+        .блок-бенто { background: white; border-radius: 25px; padding: 25px; box-shadow: var(--тень); display: flex; align-items: center; justify-content: space-between; height: 110px; margin-bottom: 15px; transition: transform 0.2s; border: none; width: 100%; }
+        .блок-бенто:active { transform: scale(0.97); }
+        .розовый { background: var(--акцент); color: white; }
+        .черный { background: #1a1a1a; color: white; border: 1px solid var(--золото); }
+
+        .кнопка-люкс { background: var(--акцент); color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 800; width: 100%; margin-top: 10px; }
+        .инпут-люкс { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 18px; border-radius: 20px; color: white; width: 100%; margin: 20px 0; text-align: center; font-size: 16px; }
+
+        .мини-аватар { width: 40px; height: 40px; border-radius: 12px; background-size: cover; background-position: center; border: 2px solid white; box-shadow: var(--тень); }
+        .большой-аватар { width: 120px; height: 120px; border-radius: 35px; margin: 0 auto 15px; background-size: cover; background-position: center; border: 3px solid var(--акцент); position: relative; }
+        .слой-загрузки { position: absolute; inset: 0; background: rgba(0,0,0,0.3); border-radius: 32px; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
+        .большой-аватар:hover .слой-загрузки { opacity: 1; }
+
+        .карточка-инфо { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--тень); }
+        .назад { text-align: center; padding: 20px; opacity: 0.5; font-size: 13px; font-weight: 600; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="фон-свечение"></div>
+
+    <div id="оверлей-входа">
+        <h1 style="font-family:'Playfair Display'; font-size: 32px; margin-bottom: 10px;">Добро пожаловать</h1>
+        <p style="opacity: 0.7;">Вступите в Хай Хилс Элит</p>
+        <input type="tel" id="поле-телефона" class="инпут-люкс" placeholder="+7 (___) ___-__-__">
+        <button class="кнопка-люкс" onclick="завершитьРегистрацию()">СТАТЬ РЕЗИДЕНТОМ</button>
+    </div>
+
+    <header>
+        <div class="лого">Хай Хилс <span style="color:var(--акцент)">Элит</span></div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div onclick="перейти('помощь')" style="font-size: 20px;">❓</div>
+            <div id="мини-аватар" class="мини-аватар" onclick="перейти('профиль')"></div>
+        </div>
+    </header>
+
+    <div id="страница-главная" class="страница активна">
+        <div class="карточка-статуса" onclick="перейти('профиль')">
+            <span style="font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px;">Ваш ранг</span>
+            <h2 id="название-статуса" style="font-family:'Playfair Display'; font-size: 24px; color: var(--золото); margin: 5px 0;">Загрузка...</h2>
+            <div class="прогресс-фон">
+                <div id="полоска-прогресса" class="прогресс-линия"></div>
+            </div>
+            <p id="текст-опыта" style="font-size: 10px; margin-top: 8px; opacity: 0.8;">0 / 100 опыт</p>
+        </div>
+
+        <button class="блок-бенто розовый" onclick="открытьЗенкласс()">
+            <div><p style="font-size: 10px; opacity: 0.8;">ОБУЧЕНИЕ</p><h3>Онлайн Академия</h3></div>
+            <span style="font-size:35px;">📺</span>
+        </button>
+
+        <button class="блок-бенто черный" onclick="перейти('оффлайн')">
+            <div><p style="font-size: 10px; color: var(--золото);">В СТУДИИ</p><h3>Оффлайн Академия</h3></div>
+            <span style="font-size:35px;">👠</span>
+        </button>
+
+        <button class="кнопка-люкс" onclick="сделатьЧекин()">ОТМЕТИТЬСЯ ✨</button>
+    </div>
+
+    <div id="страница-профиль" class="страница">
+        <div style="text-align:center; padding: 20px 0;">
+            <div id="большой-аватар" class="большой-аватар" onclick="кликЗагрузка()">
+                <div class="слой-загрузки">📷</div>
+            </div>
+            <h2 id="имя-дивы" style="font-family:'Playfair Display'; font-size: 28px;">Дива</h2>
+            <p id="ранг-в-профиле" style="font-size: 12px; color: var(--золото); font-weight: 700; margin-top: 5px; letter-spacing: 1px;"></p>
+        </div>
+        
+        <input type="file" id="загрузчик" hidden accept="image/*" onchange="обработатьФото(this)">
+        
+        <div class="карточка-инфо" style="text-align: center;">
+            <p style="font-size: 12px; opacity: 0.5;">ВАШ ТЕЛЕФОН</p>
+            <p id="показ-телефона" style="font-weight: 600;">-</p>
+        </div>
+
+        <div class="назад" onclick="перейти('главная')">← Назад</div>
+    </div>
+
+    <div id="страница-оффлайн" class="страница">
+        <h2 style="font-family:'Playfair Display'; font-size: 26px; margin-bottom: 20px;">Оффлайн</h2>
+        <div class="карточка-инфо" onclick="tg.showAlert('Скоро открытие записи')"><h4>🎓 Курсы</h4></div>
+        <div class="карточка-инфо" onclick="tg.showAlert('Анонсы в пути')"><h4>💃 Мастер-классы</h4></div>
+        <div class="карточка-инфо" onclick="tg.showAlert('Ждите приглашения')"><h4>🥂 Мероприятия</h4></div>
+        <div class="карточка-инфо" onclick="tg.openTelegramLink('https://t.me/platonova_support')"><h4>💬 Поддержка</h4></div>
+        <div class="назад" onclick="перейти('главная')">← Назад</div>
+    </div>
+
+    <div id="страница-помощь" class="страница">
+        <h2 style="font-family:'Playfair Display'; font-size: 26px; margin-bottom: 20px;">Как это работает</h2>
+        <div class="карточка-инфо"><h4>🔥 Чекины</h4><p>Отмечайся каждый день и получай +20 опыта. Регулярность — путь к вершине.</p></div>
+        <div class="карточка-инфо"><h4>📈 10 Статусов</h4><p>От Дебютантки до Иконы Элит. Чем выше ранг, тем больше привилегий.</p></div>
+        <div class="назад" onclick="перейти('главная')">← Назад</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready(); tg.expand();
+
+        // КОНФИГУРАЦИЯ СТАТУСОВ
+        const СТАТУСЫ = [
+            "Дебютантка", "Ученица", "Грация", "Эстетика", "Муза", 
+            "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона Элит"
+        ];
+        const ОПЫТ_НА_УРОВЕНЬ = 100;
+
+        let данные = {
+            опыт: parseInt(localStorage.getItem('diva_xp')) || 0,
+            телефон: localStorage.getItem('diva_phone') || '',
+            фото: localStorage.getItem('diva_photo') || ''
+        };
+
+        function обновитьИнтерфейс() {
+            const уровень = Math.min(Math.floor(данные.опыт / ОПЫТ_НА_УРОВЕНЬ), 9);
+            const опытВнутриУровня = данные.опыт % ОПЫТ_НА_УРОВЕНЬ;
+            const имя = tg.initDataUnsafe.user?.first_name || "Дива";
+
+            document.getElementById('название-статуса').innerText = СТАТУСЫ[уровень];
+            document.getElementById('ранг-в-профиле').innerText = СТАТУСЫ[уровень].toUpperCase();
+            document.getElementById('текст-опыта').innerText = `${опытВнутриУровня} / ${ОПЫТ_НА_УРОВЕНЬ} ОПЫТ`;
+            document.getElementById('полоска-прогресса').style.width = `${опытВнутриУровня}%`;
+            document.getElementById('имя-дивы').innerText = имя;
+            document.getElementById('показ-телефона').innerText = данные.телефон;
+
+            // Фото
+            const фотоИсточник = данные.фото || tg.initDataUnsafe.user?.photo_url || `https://ui-avatars.com/api/?name=${имя}&background=D81B60&color=fff`;
+            document.getElementById('мини-аватар').style.backgroundImage = `url(${фотоИсточник})`;
+            document.getElementById('большой-аватар').style.backgroundImage = `url(${фотоИсточник})`;
+        }
+
+        function сделатьЧекин() {
+            данные.опыт += 20;
+            localStorage.setItem('diva_xp', данные.опыт);
+            tg.HapticFeedback.notificationOccurred('success');
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.8 } });
+            обновитьИнтерфейс();
+            tg.showAlert("Вы отметились! +20 опыта начислено.");
+        }
+
+        function кликЗагрузка() { document.getElementById('загрузчик').click(); }
+
+        function обработатьФото(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    данные.фото = e.target.result;
+                    localStorage.setItem('diva_photo', данные.фото);
+                    обновитьИнтерфейс();
+                    tg.showAlert("Образ обновлен! ✨");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function завершитьРегистрацию() {
+            const тел = document.getElementById('поле-телефона').value;
+            if (тел.length < 10) { tg.showAlert("Введите корректный номер"); return; }
+            данные.телефон = тел;
+            localStorage.setItem('diva_phone', тел);
+            document.getElementById('оверлей-входа').style.display = 'none';
+            обновитьИнтерфейс();
+        }
+
+        function перейти(id) {
+            tg.HapticFeedback.impactOccurred('light');
+            document.querySelectorAll('.страница').forEach(s => s.classList.remove('активна'));
+            document.getElementById('страница-' + id).classList.add('активна');
+            id === 'главная' ? tg.BackButton.hide() : tg.BackButton.show();
+        }
+
+        function открытьЗенкласс() {
+            tg.openLink("https://platonovalena.zenclass.ru/school/products");
+        }
+
+        tg.BackButton.onClick(() => перейти('главная'));
+
+        // Запуск
+        if (!localStorage.getItem('diva_phone')) {
+            document.getElementById('оверлей-входа').style.display = 'flex';
+        }
+        обновитьИнтерфейс();
+    </script>
+</body>
+</html>
