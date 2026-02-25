@@ -3,89 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>В ДВИЖЕНИИ | Luxe App</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>В ДВИЖЕНИИ | LUXE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root { 
             --gold: #C5A059; 
-            --gold-dark: #8e6d2f;
-            --accent: #E91E63; 
             --dark: #080808; 
-            --glass: rgba(255, 255, 255, 0.05);
             --border: rgba(197, 160, 89, 0.2);
+            --glass: rgba(255, 255, 255, 0.04);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow-x: hidden; line-height: 1.6; }
+        body { background: var(--dark); color: #F0F0F0; font-family: 'Montserrat', sans-serif; overflow: hidden; }
 
-        /* --- СИСТЕМА ФОНА --- */
+        /* --- BACKGROUND SYSTEM --- */
         .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: var(--dark); }
-        #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.4; display: block; }
-        .luxe-fallback { display: none; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #080808 100%); }
-        .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(8,8,8,0.2) 0%, rgba(8,8,8,0.9) 100%); backdrop-filter: blur(2px); }
+        #bg-video { width: 100%; height: 100%; object-fit: cover; opacity: 0.35; display: block; }
+        .luxe-fallback { display: none; width: 100%; height: 100%; background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #080808 100%); position: relative; }
+        .luxe-fallback::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); opacity: 0.1; }
+        .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(8,8,8,0) 0%, rgba(8,8,8,0.95) 100%); backdrop-filter: blur(1px); }
 
-        /* --- КОМПОНЕНТЫ ИНТЕРФЕЙСА --- */
-        header { padding: 35px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; }
-        .logo-luxe { font-family: 'Playfair Display', serif; font-size: 24px; letter-spacing: 7px; text-transform: uppercase; color: var(--gold); }
-        
-        .container { padding: 20px; padding-bottom: 120px; max-width: 600px; margin: 0 auto; }
-        .страница { display: none; animation: fadeIn 0.6s ease; }
+        /* --- HEADER --- */
+        header { padding: 40px 20px; text-align: center; border-bottom: 1px solid var(--border); backdrop-filter: blur(10px); z-index: 100; position: relative; }
+        .logo-luxe { font-family: 'Playfair Display', serif; font-size: 24px; letter-spacing: 8px; text-transform: uppercase; color: var(--gold); }
+
+        .container { padding: 25px; padding-bottom: 120px; height: calc(100vh - 100px); overflow-y: auto; position: relative; }
+        .страница { display: none; animation: fadeIn 0.8s ease; }
         .страница.активна { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- КАРТОЧКИ И БЛОКИ --- */
-        .luxe-card {
-            background: rgba(20, 20, 20, 0.6); border: 1px solid var(--border); border-radius: 2px;
-            padding: 40px 25px; position: relative; overflow: hidden; margin-bottom: 25px; text-align: center; backdrop-filter: blur(15px);
-        }
-        .luxe-card::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(197, 160, 89, 0.1), transparent);
-            animation: shine 5s infinite;
-        }
-        @keyframes shine { 100% { left: 200%; } }
+        /* --- MANIFESTO --- */
+        .manifesto-box { text-align: center; padding: 60px 10px; margin-bottom: 10px; }
+        .manifesto-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 28px; line-height: 1.5; color: #fff; margin-bottom: 15px; }
+        .manifesto-subtext { font-size: 10px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); opacity: 0.8; }
 
-        .rank-title { font-family: 'Playfair Display', serif; font-size: 34px; font-style: italic; color: var(--gold); margin: 10px 0; }
-        .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 25px 0; position: relative; }
-        .progress-fill { height: 1px; background: var(--gold); position: absolute; top: 0; left: 0; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 10px var(--gold); }
-
-        .блок { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 2px; margin-bottom: 15px; backdrop-filter: blur(10px); }
-
-        /* --- КНОПКИ --- */
+        /* --- BUTTONS --- */
         .luxe-btn {
-            background: transparent; border: 1px solid var(--border); color: var(--gold);
-            padding: 18px; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
-            cursor: pointer; transition: 0.3s; width: 100%; margin-bottom: 12px; font-weight: 600;
+            background: var(--glass); border: 1px solid var(--border); color: var(--gold);
+            padding: 22px; font-size: 10px; text-transform: uppercase; letter-spacing: 3px;
+            cursor: pointer; width: 100%; margin-bottom: 15px; backdrop-filter: blur(10px); transition: 0.3s;
         }
-        .luxe-btn:active { background: var(--gold); color: black; }
+        .luxe-btn:active { background: var(--gold); color: black; transform: scale(0.98); }
 
-        /* --- АДМИНКА --- */
-        .admin-only { display: none; }
-        body.is-admin .admin-only { display: block; }
-        .student-row { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .present-btn { padding: 8px 15px; border-radius: 2px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 9px; font-weight: 800; }
-        .present-btn.on { background: var(--gold); color: black; }
+        /* --- STATUS CARD --- */
+        .luxe-card {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            padding: 45px 25px; text-align: center; backdrop-filter: blur(20px); margin-bottom: 25px; position: relative;
+        }
+        .rank-title { font-family: 'Playfair Display', serif; font-size: 38px; font-style: italic; color: var(--gold); margin: 15px 0; }
+        .progress-line { height: 1px; background: rgba(197, 160, 89, 0.1); width: 100%; margin: 30px 0; position: relative; }
+        .progress-fill { height: 1px; background: var(--gold); position: absolute; left: 0; transition: 2s cubic-bezier(0.19, 1, 0.22, 1); box-shadow: 0 0 15px var(--gold); }
 
-        /* --- НАВИГАЦИЯ --- */
+        /* --- NAVIGATION --- */
         .tab-bar {
-            position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(8,8,8,0.98);
+            position: fixed; bottom: 0; width: 100%; height: 90px; background: rgba(8,8,8,0.98);
             display: flex; justify-content: space-around; align-items: center; border-top: 1px solid var(--border);
-            padding-bottom: env(safe-area-inset-bottom); z-index: 2000;
+            padding-bottom: env(safe-area-inset-bottom); z-index: 1000;
         }
-        .tab-item { color: #444; font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; text-decoration: none; display: flex; flex-direction: column; align-items: center; flex: 1; transition: 0.3s; }
+        .tab-item { color: #444; font-size: 8px; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; display: flex; flex-direction: column; align-items: center; flex: 1; transition: 0.3s; }
         .tab-item.active { color: var(--gold); }
-        .tab-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; margin-top: 6px; opacity: 0; }
+        .tab-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; margin-top: 6px; opacity: 0; }
         .tab-item.active .tab-dot { opacity: 1; }
-        
-        .scan-circle { width: 50px; height: 50px; border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; transform: translateY(-5px); }
+
+        /* --- ADMIN SECTION --- */
+        .admin-only { display: none; margin-top: 30px; border-top: 1px solid rgba(197, 160, 89, 0.1); padding-top: 20px; }
+        body.is-admin .admin-only { display: block; }
     </style>
 </head>
-<body id="main-body">
+<body>
 
     <div class="background-wrapper">
-        <video autoplay muted loop playsinline id="bg-video" onerror="handleVideoError()">
+        <video autoplay muted loop playsinline id="bg-video" onerror="this.style.display='none'; document.getElementById('fallback-bg').style.display='block';">
             <source src="bg_video.mp4" type="video/mp4">
         </video>
         <div id="fallback-bg" class="luxe-fallback"></div>
@@ -98,9 +88,19 @@
 
     <div class="container">
         
-        <div id="home" class="страница активна">
+        <div id="move-menu" class="страница активна">
+            <div class="manifesto-box">
+                <p class="manifesto-text">Двигаться. Чувствовать.<br>Сделать себя самой.</p>
+                <p class="manifesto-subtext">Выбери свой путь</p>
+            </div>
+            
+            <button class="luxe-btn" onclick="showPage('offline-home')">Оффлайн Студия</button>
+            <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">Онлайн Академия</button>
+        </div>
+
+        <div id="offline-home" class="страница">
             <div class="luxe-card">
-                <p style="font-size: 9px; letter-spacing: 3px; opacity: 0.6;">УРОВЕНЬ МАСТЕРСТВА</p>
+                <p style="font-size: 9px; letter-spacing: 3px; opacity: 0.6;">ВАШЕ МАСТЕРСТВО</p>
                 <div class="rank-title" id="status-name">Дива</div>
                 <div class="progress-line"><div id="xp-fill" class="progress-fill"></div></div>
                 <div style="display: flex; justify-content: space-between; font-size: 9px; color: var(--gold);">
@@ -109,46 +109,34 @@
                 </div>
             </div>
 
-            <div class="блок" style="text-align: center;">
-                <p id="streak-info" style="font-size: 10px; letter-spacing: 2px; color: var(--gold);">🔥 3 ДНЯ В ДВИЖЕНИИ</p>
+            <button class="luxe-btn" onclick="openBox()">Получить комплимент дня</button>
+            <button class="luxe-btn" style="border:none; opacity:0.4; font-size:9px;" onclick="showPage('move-menu')">← Вернуться к выбору</button>
+
+            <div class="admin-only">
+                <p style="font-size: 8px; color: var(--gold); text-align: center; margin-bottom: 10px; letter-spacing: 2px;">MANAGEMENT MODE</p>
+                <button class="luxe-btn" style="border-color: var(--gold);" onclick="coachReward(50)">Начислить +50 XP всей группе</button>
             </div>
-
-            <button class="luxe-btn" onclick="openBox()">Получить подарок дня</button>
-            <button class="luxe-btn" onclick="tg.openLink('https://platonovalena.zenclass.ru')">Курсы и Обучение</button>
-
-            <div class="admin-only" style="margin-top: 30px;">
-                <p style="font-size: 9px; color: var(--gold); text-align: center; margin-bottom: 15px; letter-spacing: 2px;">MANAGEMENT</p>
-                <button class="luxe-btn" style="border-color: var(--gold); color: var(--gold);" onclick="coachReward(50)">Начислить XP всей группе</button>
-            </div>
-        </div>
-
-        <div id="journal" class="страница">
-            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Журнал</h2>
-            <div id="students-list"></div>
         </div>
 
         <div id="rating" class="страница">
-            <h2 style="font-family: 'Playfair Display'; font-size: 24px; margin-bottom: 20px; color: var(--gold);">Рейтинг</h2>
+            <h2 style="font-family:'Playfair Display'; text-align:center; color:var(--gold); margin-bottom:30px; font-style:italic;">Elite Ranking</h2>
             <div id="leaderboard"></div>
         </div>
 
         <div id="profile" class="страница">
-            <div style="text-align: center; padding: 20px;">
-                <div id="big-ava" style="width: 110px; height: 110px; border: 1px solid var(--gold); margin: 0 auto 20px; background-size: cover;"></div>
-                <h2 id="user-name" style="font-family: 'Playfair Display'; font-size: 28px;">Участница</h2>
-                <p id="user-rank-label" style="font-size: 10px; letter-spacing: 3px; color: var(--gold); margin-top: 10px;"></p>
+            <div style="text-align: center; padding-top: 30px;">
+                <div id="big-ava" style="width: 130px; height: 130px; border: 1px solid var(--border); margin: 0 auto 30px; background-size: cover; background-position: center; filter: grayscale(20%);"></div>
+                <h2 id="user-name" style="font-family:'Playfair Display'; font-size: 34px; letter-spacing: 1px;">Участница</h2>
+                <p id="user-rank-label" style="font-size: 11px; letter-spacing: 5px; color: var(--gold); margin-top: 15px;"></p>
+                <p style="font-size: 10px; opacity: 0.5; margin-top: 40px;">Благодарим, что вы В ДВИЖЕНИИ</p>
             </div>
         </div>
 
     </div>
 
     <nav class="tab-bar">
-        <a href="javascript:void(0)" class="tab-item active" onclick="showPage('home', this)">Студия<div class="tab-dot"></div></a>
+        <a href="javascript:void(0)" class="tab-item active" onclick="showPage('move-menu', this)">Двигаться<div class="tab-dot"></div></a>
         <a href="javascript:void(0)" class="tab-item" onclick="showPage('rating', this)">Топ<div class="tab-dot"></div></a>
-        <div class="scan-circle" onclick="scanQR()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.2"><path d="M3 7V5a2 2 0 012-2h2m10 0h2a2 2 0 012 2v2m0 10v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2"></path></svg>
-        </div>
-        <a href="javascript:void(0)" class="tab-item admin-only" onclick="showPage('journal', this)">Журнал<div class="tab-dot"></div></a>
         <a href="javascript:void(0)" class="tab-item" onclick="showPage('profile', this)">Профиль<div class="tab-dot"></div></a>
     </nav>
 
@@ -156,105 +144,66 @@
         const tg = window.Telegram.WebApp;
         tg.ready(); tg.expand();
 
+        // ID учредителей для доступа к админке
         const ADMIN_IDS = [123456789, 7461427508]; 
-        const СТАТУСЫ = ["Начало пути", "Ученица", "Грация", "Эстетика", "Муза", "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона"];
+        const СТАТУСЫ = ["Начало", "Ученица", "Грация", "Эстетика", "Муза", "Амбассадор", "Звезда", "Премиум Дива", "Платиновая Дива", "Икона"];
         
         let state = {
             xp: parseInt(localStorage.getItem('hhe_xp')) || 0,
-            name: tg.initDataUnsafe.user?.first_name || "Участница",
+            name: tg.initDataUnsafe.user?.first_name || "Дива",
             id: tg.initDataUnsafe.user?.id
         };
 
-        const MOCK_STUDENTS = [
-            {id: 1, name: "Мария", xp: 850, present: false},
-            {id: 2, name: "Анна", xp: 1200, present: true},
-            {id: 3, name: "Елизавета", xp: 450, present: false}
-        ];
-
-        function handleVideoError() {
-            document.getElementById('bg-video').style.display = 'none';
-            document.getElementById('fallback-bg').style.display = 'block';
-        }
-
         function render() {
             const idx = Math.min(Math.floor(state.xp / 100), 9);
-            const curXP = state.xp % 100;
-
             document.getElementById('status-name').innerText = СТАТУСЫ[idx];
-            document.getElementById('xp-fill').style.width = curXP + '%';
-            document.getElementById('xp-current').innerText = curXP + ' XP';
-            
+            document.getElementById('xp-fill').style.width = (state.xp % 100) + '%';
+            document.getElementById('xp-current').innerText = (state.xp % 100) + ' XP';
             document.getElementById('user-name').innerText = state.name;
             document.getElementById('user-rank-label').innerText = СТАТУСЫ[idx].toUpperCase();
-            const img = `https://ui-avatars.com/api/?name=${state.name}&background=080808&color=C5A059&size=200`;
-            document.getElementById('big-ava').style.backgroundImage = `url(${img})`;
-
-            if(ADMIN_IDS.includes(state.id)) document.body.classList.add('is-admin');
             
+            const img = `https://ui-avatars.com/api/?name=${state.name}&background=080808&color=C5A059&size=300`;
+            document.getElementById('big-ava').style.backgroundImage = `url(${img})`;
+            
+            if(ADMIN_IDS.includes(state.id)) document.body.classList.add('is-admin');
             updateLeaderboard();
-            renderJournal();
-        }
-
-        function renderJournal() {
-            const list = document.getElementById('students-list');
-            list.innerHTML = MOCK_STUDENTS.map(s => `
-                <div class="student-row">
-                    <div><span style="font-size:14px; font-weight:600;">${s.name}</span><br><small style="color:var(--gold); font-size:9px;">${s.xp} XP</small></div>
-                    <button class="present-btn ${s.present?'on':''}" onclick="toggleStudent(${s.id})">${s.present?'ОТМЕЧЕНА':'НЕТ'}</button>
-                </div>
-            `).join('');
-        }
-
-        function toggleStudent(id) {
-            const s = MOCK_STUDENTS.find(x => x.id === id);
-            s.present = !s.present;
-            tg.HapticFeedback.impactOccurred('light');
-            renderJournal();
         }
 
         function coachReward(p) {
             state.xp += p;
             localStorage.setItem('hhe_xp', state.xp);
-            confetti({ particleCount: 60, spread: 70, colors: ['#C5A059'], origin: { y: 0.8 } });
+            confetti({ particleCount: 70, spread: 80, colors: ['#C5A059'], origin: { y: 0.8 } });
             tg.HapticFeedback.notificationOccurred('success');
             render();
         }
 
         function openBox() {
-            if(localStorage.getItem('hhe_box_claimed') == new Date().getDate()) {
-                tg.showAlert("Подарок будет доступен завтра. ✨");
+            if(localStorage.getItem('hhe_claimed') == new Date().getDate()) {
+                tg.showAlert("Вы уже получили комплимент сегодня. До встречи завтра!");
                 return;
             }
-            localStorage.setItem('hhe_box_claimed', new Date().getDate());
-            tg.HapticFeedback.impactOccurred('medium');
-            tg.showAlert("Вы в движении! Начислено +25 XP.");
+            localStorage.setItem('hhe_claimed', new Date().getDate());
+            tg.showAlert("Ваше движение безупречно. +25 XP.");
             coachReward(25);
         }
 
         function showPage(pageId, el) {
             document.querySelectorAll('.страница').forEach(p => p.classList.remove('активна'));
             document.getElementById(pageId).classList.add('активна');
-            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
+            if(el) {
+                document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+                el.classList.add('active');
+            }
             tg.HapticFeedback.selectionChanged();
-        }
-
-        function scanQR() {
-            tg.showScanQrPopup({ text: "Сканируйте пропуск студии" }, (text) => {
-                if(text.includes("MOVE_XP")) {
-                    coachReward(30);
-                    tg.closeScanQrPopup();
-                }
-            });
         }
 
         function updateLeaderboard() {
             const list = document.getElementById('leaderboard');
-            const leaders = [{n: "Алена П. ✨", x: 5000}, {n: state.name, x: state.xp, me: true}, {n: "Мария", x: 920}].sort((a,b) => b.x - a.x);
-            list.innerHTML = leaders.map((u, i) => `
-                <div class="блок" style="display:flex; justify-content:space-between; align-items:center; ${u.me?'border-color:var(--gold)':''}">
-                    <span style="font-size:12px;">#${i+1} ${u.n}</span>
-                    <span style="color:var(--gold); font-weight:800; font-size:12px;">${u.x} XP</span>
+            const data = [{n: "Алена П.", x: 5000}, {n: state.name, x: state.xp, me:true}].sort((a,b)=>b.x-a.x);
+            list.innerHTML = data.map((u,i) => `
+                <div class="luxe-card" style="padding:25px; display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; ${u.me?'border-color:var(--gold)':''}">
+                    <span style="font-size:12px; letter-spacing:1px;">${i+1}. ${u.n}</span>
+                    <b style="color:var(--gold);">${u.x} XP</b>
                 </div>
             `).join('');
         }
