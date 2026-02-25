@@ -3,128 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>High Heels Elite | Mobile Luxury</title>
+    <title>High Heels Elite | Академия</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --accent: #E91E63;
-            --gold: #C5A059;
-            --dark: #12050D;
-            --glass: rgba(255, 255, 255, 0.9);
-            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --accent: #E91E63; --gold: #C5A059; --dark: #12050D;
+            --glass: rgba(255, 255, 255, 0.9); --shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
-        
-        body { 
-            background: #F8F9FA; 
-            color: var(--dark); 
-            font-family: 'Montserrat', sans-serif; 
-            line-height: 1.4;
-            overflow-x: hidden;
+        body { background: #F8F9FA; color: var(--dark); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+        .bg-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 90% 10%, #fce4ec 0%, #f8f9fa 50%); z-index: -1; }
+
+        #registration-overlay {
+            position: fixed; inset: 0; background: var(--dark); z-index: 20000;
+            display: none; flex-direction: column; justify-content: center; padding: 40px;
+            text-align: center; color: white; transition: opacity 0.6s;
         }
 
-        /* АНИМИРОВАННЫЙ ФОН */
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 90% 10%, #fce4ec 0%, #f8f9fa 50%);
-            z-index: -1;
-        }
+        header { padding: 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; background: rgba(248, 249, 250, 0.8); backdrop-filter: blur(10px); }
+        .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; }
 
-        /* HEADER */
-        header {
-            padding: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(248, 249, 250, 0.8);
-            backdrop-filter: blur(10px);
-        }
-        .logo { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
-
-        /* СТРАНИЦЫ */
         .page { display: none; padding: 0 20px 100px; animation: pageIn 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         .page.active { display: block; }
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* LOYALTY CARD (LUXURY) */
         .loyalty-card {
-            background: var(--dark);
-            border-radius: 30px;
-            padding: 25px;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 40px rgba(18, 5, 13, 0.3);
-            transition: transform 0.3s;
+            background: var(--dark); border-radius: 30px; padding: 25px; color: white;
+            position: relative; overflow: hidden; margin-bottom: 25px; box-shadow: 0 20px 40px rgba(18, 5, 13, 0.3);
         }
-        .loyalty-card:active { transform: scale(0.97); }
-        .loyalty-card::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(233,30,99,0.2) 0%, transparent 70%);
-        }
-
         .card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; }
         .card-status { font-family: 'Playfair Display', serif; font-size: 24px; margin: 5px 0 15px; }
         
-        .progress-container { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), #ff80ab); width: 65%; border-radius: 10px; box-shadow: 0 0 15px var(--accent); }
-
-        /* BENTO GRID (MOBILE OPTIMIZED) */
         .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .bento-item {
-            background: white; border-radius: 25px; padding: 20px;
-            box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.03);
-            display: flex; flex-direction: column; justify-content: space-between;
-            height: 150px; position: relative; transition: all 0.3s;
+            background: white; border-radius: 25px; padding: 20px; box-shadow: var(--shadow);
+            display: flex; flex-direction: column; justify-content: space-between; height: 150px;
         }
-        .bento-item:active { transform: translateY(2px); box-shadow: none; }
-        .bento-wide { grid-column: span 2; height: 110px; flex-direction: row; align-items: center; }
-        
-        .bento-item h3 { font-size: 16px; font-weight: 700; margin-top: 10px; }
-        .bento-item .icon { font-size: 28px; }
+        .bento-wide { grid-column: span 2; height: 110px; flex-direction: row; align-items: center; background: var(--accent); color: white; border: none; }
+        .bento-item h3 { font-size: 16px; font-weight: 700; }
 
-        /* КНОПКИ */
         .btn-luxury {
-            background: var(--accent);
-            color: white; border: none; padding: 20px; border-radius: 20px;
-            font-weight: 800; font-size: 16px; width: 100%;
+            background: var(--accent); color: white; border: none; padding: 20px; border-radius: 20px;
+            font-weight: 800; font-size: 16px; width: 100%; margin-top: 20px;
             box-shadow: 0 10px 20px rgba(233, 30, 99, 0.2);
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            margin-top: 20px;
+        }
+        .input-luxury {
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            padding: 18px; border-radius: 20px; color: white; width: 100%;
+            margin: 20px 0; font-family: 'Montserrat'; text-align: center; font-size: 16px;
         }
 
-        /* AVATAR */
-        #mini-avatar { 
-            width: 40px; height: 40px; border-radius: 14px; 
-            background-size: cover; background-position: center;
-            border: 2px solid white; box-shadow: var(--shadow);
-            transform: rotate(-3deg); transition: 0.3s;
-        }
-        #mini-avatar:active { transform: rotate(0) scale(1.1); }
-
-        /* PROFILE SPECIFIC */
-        .stat-group { display: flex; gap: 10px; margin: 20px 0; }
-        .stat-box { 
-            flex: 1; background: white; padding: 20px; border-radius: 22px; 
-            text-align: center; box-shadow: var(--shadow);
-        }
+        #mini-avatar { width: 40px; height: 40px; border-radius: 14px; background-size: cover; border: 2px solid white; box-shadow: var(--shadow); transform: rotate(-3deg); }
+        .stat-box { flex: 1; background: white; padding: 20px; border-radius: 22px; text-align: center; box-shadow: var(--shadow); }
         .stat-val { display: block; font-size: 24px; font-weight: 800; color: var(--accent); }
-        .stat-lab { font-size: 10px; font-weight: 600; opacity: 0.5; text-transform: uppercase; }
-
-        .back-link { 
-            text-align: center; padding: 20px; color: var(--dark); 
-            font-size: 14px; font-weight: 700; opacity: 0.5; 
-        }
-
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
+
+    <div id="registration-overlay">
+        <div style="animation: pageIn 0.8s ease;">
+            <h1 style="font-family:'Playfair Display'; font-size: 32px; margin-bottom: 20px;">Регистрация</h1>
+            <p style="opacity: 0.7; font-size: 14px;">Вступи в клуб High Heels Elite</p>
+            <input type="tel" id="user-phone" class="input-luxury" placeholder="+7 (___) ___-__-__">
+            <button class="btn-luxury" onclick="completeRegistration()">ПОДТВЕРДИТЬ</button>
+        </div>
+    </div>
 
     <header>
         <div class="logo">High Heels <span style="color:var(--accent)">Elite</span></div>
@@ -133,94 +81,105 @@
 
     <div id="page-home" class="page active">
         <div class="loyalty-card" onclick="navigateTo('profile')">
-            <span class="card-label">Premium Member</span>
+            <span class="card-label">Твой статус</span>
             <h2 class="card-status">Platinum Diva</h2>
-            <div style="display:flex; justify-content:space-between; font-size:11px;">
-                <span>Progress to Legend</span>
-                <span>850 / 1000 XP</span>
+            <div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; margin: 10px 0;">
+                <div style="height: 100%; background: var(--accent); width: 85%; border-radius: 10px;"></div>
             </div>
-            <div class="progress-container"><div class="progress-bar" style="width: 85%"></div></div>
         </div>
 
         <div class="bento-grid">
-            <div class="bento-item bento-wide" onclick="navigateTo('online')">
+            <div class="bento-item bento-wide" onclick="openZenclass()">
                 <div>
-                    <span class="card-label" style="color:var(--accent)">New Classes</span>
-                    <h3>Online Academy</h3>
+                    <span class="card-label" style="color:white; opacity: 0.8;">Программы обучения</span>
+                    <h3>Онлайн Академия</h3>
                 </div>
-                <span class="icon">📺</span>
+                <span style="font-size:30px;">📺</span>
             </div>
-            <div class="bento-item" onclick="navigateTo('offline')">
-                <span class="icon">👠</span>
-                <h3>Studio<br>Booking</h3>
+            
+            <div class="bento-item" onclick="tg.showAlert('Функция записи скоро появится!')">
+                <span style="font-size:30px;">👠</span>
+                <h3>Запись<br>в студию</h3>
             </div>
-            <div class="bento-item" style="background:var(--gold); color:white; border:none;" onclick="tg.showAlert('Coming Soon!')">
-                <span class="icon">🎁</span>
-                <h3>Diva<br>Shop</h3>
+            <div class="bento-item" style="background:var(--gold); color:white; border:none;" onclick="tg.showAlert('Магазин в разработке')">
+                <span style="font-size:30px;">🎁</span>
+                <h3>Diva<br>Маркет</h3>
             </div>
         </div>
 
-        <button class="btn-luxury" onclick="tg.HapticFeedback.notificationOccurred('success'); confetti({particleCount:150, spread:70, origin:{y:0.7}});">
-            CHECK-IN TODAY ✨
-        </button>
+        <button class="btn-luxury" onclick="handleCheckIn()">ОТМЕТИТЬСЯ ✨</button>
     </div>
 
     <div id="page-profile" class="page">
         <div style="text-align:center; padding: 20px 0;">
-            <div id="big-avatar" style="width:100px; height:100px; border-radius:30px; margin:0 auto 20px; background-size:cover; transform: rotate(3deg); box-shadow: 0 15px 30px rgba(0,0,0,0.2);"></div>
-            <h2 id="user-name" style="font-family:'Playfair Display'; font-size:28px;">Diva</h2>
-            <p style="font-size:12px; font-weight:600; color:var(--gold);">EXCLUSIVE ACCESS GRANTED</p>
+            <div id="big-avatar" style="width:100px; height:100px; border-radius:30px; margin:0 auto 20px; background-size:cover; border:3px solid var(--accent);"></div>
+            <h2 id="user-name">Дива</h2>
         </div>
 
-        <div class="stat-group">
-            <div class="stat-box"><span class="stat-val">2.4k</span><span class="stat-lab">Coins</span></div>
-            <div class="stat-box"><span class="stat-val">12</span><span class="stat-lab">Lessons</span></div>
-            <div class="stat-box"><span class="stat-val">🔥 5</span><span class="stat-lab">Streak</span></div>
+        <div style="display:flex; gap:10px; margin: 20px 0;">
+            <div class="stat-box"><span class="stat-val">2.4к</span><span style="font-size:10px;">КОИНОВ</span></div>
+            <div class="stat-box"><span class="stat-val">🔥 5</span><span style="font-size:10px;">СТРИК</span></div>
         </div>
 
-        <div style="background:white; border-radius:25px; padding:20px; box-shadow:var(--shadow);">
-            <h4 style="margin-bottom:15px; font-size:14px;">Recent Achievements</h4>
-            <div style="display:flex; gap:10px;">
-                <div style="width:50px; height:50px; background:#fce4ec; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:20px;">👑</div>
-                <div style="width:50px; height:50px; background:#fce4ec; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:20px;">🔥</div>
-                <div style="width:50px; height:50px; background:#eee; border-radius:15px; display:flex; align-items:center; justify-content:center; font-size:20px; opacity:0.3;">💎</div>
-            </div>
+        <div style="text-align:center; padding:20px; opacity:0.5; font-size:14px;" onclick="navigateTo('home')">
+            ← НАЗАД В МЕНЮ
         </div>
-
-        <div class="back-link" onclick="navigateTo('home')">← BACK TO STUDIO</div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
-        tg.headerColor = '#F8F9FA';
 
-        const user = tg.initDataUnsafe.user || { first_name: "Diva" };
-        const photo = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=D81B60&color=fff`;
+        const ZENCLASS_URL = "https://platonovalena.zenclass.ru/school/products";
+
+        function openZenclass() {
+            tg.HapticFeedback.impactOccurred('medium');
+            tg.openLink(ZENCLASS_URL);
+        }
 
         function init() {
+            if (!localStorage.getItem('isDivaRegistered')) {
+                document.getElementById('registration-overlay').style.display = 'flex';
+            }
+            const user = tg.initDataUnsafe.user || { first_name: "Дива" };
+            const photo = user.photo_url || `https://ui-avatars.com/api/?name=${user.first_name}&background=D81B60&color=fff`;
+            
             document.getElementById('user-name').innerText = user.first_name;
             document.getElementById('mini-avatar').style.backgroundImage = `url(${photo})`;
             document.getElementById('big-avatar').style.backgroundImage = `url(${photo})`;
             
-            // Настройка кнопки назад
             tg.BackButton.onClick(() => navigateTo('home'));
         }
 
-        function navigateTo(pageId) {
-            tg.HapticFeedback.impactOccurred('medium');
-            
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-' + (pageId === 'online' || pageId === 'offline' ? 'home' : pageId)).classList.add('active');
+        function completeRegistration() {
+            const phone = document.getElementById('user-phone').value;
+            if (phone.length < 10) {
+                tg.showAlert("Введите номер телефона");
+                return;
+            }
+            localStorage.setItem('isDivaRegistered', 'true');
+            tg.HapticFeedback.notificationOccurred('success');
+            document.getElementById('registration-overlay').style.opacity = '0';
+            setTimeout(() => document.getElementById('registration-overlay').style.display = 'none', 600);
+        }
 
+        function navigateTo(pageId) {
+            tg.HapticFeedback.impactOccurred('light');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             if (pageId === 'home') {
+                document.getElementById('page-home').classList.add('active');
                 tg.BackButton.hide();
             } else {
+                document.getElementById('page-profile').classList.add('active');
                 tg.BackButton.show();
             }
-            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function handleCheckIn() {
+            tg.HapticFeedback.notificationOccurred('success');
+            confetti({ particleCount: 100, spread: 50 });
+            tg.showAlert("Вы отметились! +10 XP");
         }
 
         init();
